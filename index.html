@@ -1,0 +1,1644 @@
+<title>LinoRobot2 Yapım Kılavuzu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #E9ECE6;
+    --surface: #F8FAF6;
+    --surface-raised: #FFFFFF;
+    --border: #C7D0C2;
+    --trace: #3F7A5C;
+    --text: #1A2019;
+    --text-muted: #57604F;
+    --text-faint: #7C8574;
+    --accent: #B0591D;
+    --accent-strong: #8A4416;
+    --accent-soft: #E9D3BC;
+    --warn: #A5372B;
+    --warn-soft: #F1DAD3;
+    --rail-raw: #B0591D;
+    --rail-reg: #C98A2C;
+    --rail-sig: #3F7A5C;
+    --rail-data: #4C5A9A;
+    --code-bg: #E2E7DC;
+    --shadow: 0 1px 2px rgba(20,25,17,0.06), 0 6px 20px rgba(20,25,17,0.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", "Roboto Mono", Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12160F;
+      --surface: #181D15;
+      --surface-raised: #1F251B;
+      --border: #384330;
+      --trace: #5FA37E;
+      --text: #E9EDE3;
+      --text-muted: #A6AF9C;
+      --text-faint: #798172;
+      --accent: #E6924C;
+      --accent-strong: #F2AC70;
+      --accent-soft: #3A2A18;
+      --warn: #E2695A;
+      --warn-soft: #3A2320;
+      --rail-raw: #E6924C;
+      --rail-reg: #E0B454;
+      --rail-sig: #5FA37E;
+      --rail-data: #8C9AE0;
+      --code-bg: #222819;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12160F;
+    --surface: #181D15;
+    --surface-raised: #1F251B;
+    --border: #384330;
+    --trace: #5FA37E;
+    --text: #E9EDE3;
+    --text-muted: #A6AF9C;
+    --text-faint: #798172;
+    --accent: #E6924C;
+    --accent-strong: #F2AC70;
+    --accent-soft: #3A2A18;
+    --warn: #E2695A;
+    --warn-soft: #3A2320;
+    --rail-raw: #E6924C;
+    --rail-reg: #E0B454;
+    --rail-sig: #5FA37E;
+    --rail-data: #8C9AE0;
+    --code-bg: #222819;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-strong); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    max-width: 1360px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Sidebar ---------- */
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 18px 40px 24px;
+    border-right: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  .toc .brand {
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .toc .brand-sub {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin-bottom: 22px;
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: sec;
+  }
+  .toc li { counter-increment: sec; margin-bottom: 2px; }
+  .toc a {
+    display: flex;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-muted);
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .toc a:hover { background: var(--surface-raised); color: var(--text); }
+  .toc a::before {
+    content: counter(sec, decimal-leading-zero);
+    color: var(--accent);
+    opacity: 0.85;
+    flex-shrink: 0;
+  }
+
+  main { min-width: 0; padding: 0 0 80px 0; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 46px 48px 34px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero .kicker {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  .hero h1 {
+    font-family: var(--mono);
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .hero p.lede {
+    max-width: 62ch;
+    color: var(--text-muted);
+    font-size: 16px;
+    margin: 0 0 26px;
+  }
+  .spec-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .spec-strip div {
+    padding: 12px 20px;
+    border-right: 1px solid var(--border);
+    flex: 1 1 auto;
+    min-width: 130px;
+  }
+  .spec-strip div:last-child { border-right: none; }
+  .spec-strip .k {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+  .spec-strip .v {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Sections ---------- */
+  section.doc {
+    padding: 44px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  section.doc:last-of-type { border-bottom: none; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .sec-num {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  h2 {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 30px 0 12px;
+    color: var(--text);
+  }
+  .sec-intro {
+    max-width: 68ch;
+    color: var(--text-muted);
+    margin: 14px 0 26px;
+  }
+  p { max-width: 70ch; }
+  .full { max-width: none; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 560px; }
+  thead th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--text); }
+  tbody td.muted { color: var(--text-muted); }
+  tr.total td { font-weight: 600; background: var(--accent-soft); }
+
+  code, .pin {
+    font-family: var(--mono);
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.92em;
+    white-space: nowrap;
+  }
+  pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    line-height: 1.55;
+  }
+  pre code { background: none; padding: 0; white-space: pre; }
+
+  /* ---------- Diagram ---------- */
+  figure.diagram {
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 22px 22px 16px;
+  }
+  figure.diagram svg { display: block; width: 100%; height: auto; max-width: 100%; }
+  figure.diagram figcaption {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    max-width: none;
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin: 14px 0 0; font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); }
+  .legend span.sw { display: inline-block; width: 18px; height: 3px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
+
+  /* ---------- Callouts ---------- */
+  .callout {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--trace);
+    border-radius: 8px;
+    padding: 14px 18px;
+    background: var(--surface);
+    margin: 18px 0;
+    max-width: 68ch;
+  }
+  .callout.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+  .callout .lbl {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .callout.warn .lbl { color: var(--warn); }
+
+  /* ---------- Steps ---------- */
+  .steps { list-style: none; margin: 0; padding: 0; max-width: 72ch; }
+  .steps > li {
+    position: relative;
+    padding: 4px 0 22px 38px;
+    border-left: 1px solid var(--border);
+    margin-left: 13px;
+  }
+  .steps > li:last-child { border-left: 1px solid transparent; padding-bottom: 0; }
+  .steps > li::before {
+    content: counter(step);
+    counter-increment: step;
+    position: absolute;
+    left: -13px;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps { counter-reset: step; }
+  .steps h4 { margin: 0 0 6px; font-size: 14.5px; font-family: var(--sans); font-weight: 600; }
+  .steps p { margin: 0 0 6px; color: var(--text-muted); font-size: 14px; }
+
+  /* ---------- Checklist ---------- */
+  .checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 68ch; }
+  .checklist li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    font-size: 14px;
+  }
+  .checklist li .box {
+    flex-shrink: 0;
+    width: 16px; height: 16px;
+    margin-top: 2px;
+    border: 1.5px solid var(--trace);
+    border-radius: 4px;
+  }
+
+  /* ---------- Gotcha cards ---------- */
+  .gotchas { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .gotcha {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    background: var(--surface);
+  }
+  .gotcha .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--warn);
+    border: 1px solid var(--warn);
+    border-radius: 20px;
+    padding: 2px 9px;
+    margin-bottom: 10px;
+  }
+  .gotcha h4 { margin: 0 0 6px; font-size: 14px; font-family: var(--sans); font-weight: 600; }
+  .gotcha p { margin: 0; font-size: 13px; color: var(--text-muted); max-width: none; }
+
+  /* ---------- BOM group ---------- */
+  .bom-group-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin: 26px 0 8px;
+  }
+  .bom-group-title:first-child { margin-top: 0; }
+
+  footer.page {
+    padding: 30px 48px 60px;
+    color: var(--text-faint);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; }
+    nav.toc { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    .hero, section.doc, footer.page { padding-left: 24px; padding-right: 24px; }
+  }
+
+  /* ---------- File appendix ---------- */
+  .file-meta { font-family: var(--sans); font-weight: 400; font-size: 12px; color: var(--text-faint); }
+  p.file-note { font-size: 13px; color: var(--text-muted); margin: 0 0 10px; }
+  pre.file-block {
+    font-size: 11.5px;
+    max-height: 520px;
+    overflow-y: auto;
+    margin: 0 0 30px;
+  }
+  pre.file-block code { white-space: pre; }
+
+  .print-btn {
+    margin-top: 22px;
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 9px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface-raised);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .print-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .downloads {
+    margin-top: 26px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .dl-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+  .dl-link {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 5px 8px;
+    border-radius: 4px;
+  }
+  .dl-link:hover { background: var(--surface-raised); color: var(--accent-strong); }
+
+  @media print {
+    @page { margin: 14mm 12mm; }
+    body { background: #fff; }
+    :root { --bg:#fff; --surface:#fff; --surface-raised:#fff; --text:#111; --text-muted:#333; --text-faint:#666; --border:#bbb; --code-bg:#f0f0ee; }
+    nav.toc { display: none; }
+    .shell { grid-template-columns: 1fr; display: block; max-width: none; }
+    main { padding: 0; }
+    .hero, section.doc { padding: 14px 2px; border-bottom: 1px solid #ccc; }
+    section.doc { break-inside: avoid-page; page-break-inside: avoid; }
+    pre.file-block { max-height: none; overflow: visible; font-size: 9px; }
+    .gotchas { grid-template-columns: 1fr 1fr; }
+    a { color: inherit; text-decoration: none; }
+    figure.diagram { break-inside: avoid; }
+    table { font-size: 10px; min-width: 0; table-layout: fixed; width: 100%; }
+    thead th, tbody td { padding: 6px 6px; white-space: normal; word-break: break-word; }
+    tbody td.num { white-space: normal; }
+    .table-wrap { overflow-x: visible; }
+    pre { font-size: 10px; }
+    .spec-strip div { min-width: 0; padding: 8px 10px; }
+  }
+</style>
+
+<div class="shell">
+  <nav class="toc" aria-label="İçindekiler">
+    <div class="brand">LINOROBOT2</div>
+    <div class="brand-sub">Yapım Kılavuzu v1.0</div>
+    <ol>
+      <li><a href="#genel-bakis">Genel Bakış</a></li>
+      <li><a href="#malzeme">Malzeme Listesi</a></li>
+      <li><a href="#guc">Güç Mimarisi</a></li>
+      <li><a href="#kablolama">Kablolama Şeması</a></li>
+      <li><a href="#mekanik">Mekanik Montaj</a></li>
+      <li><a href="#esp32-kurulum">ESP32-S3 Firmware</a></li>
+      <li><a href="#rpi4-kurulum">Raspberry Pi 4 Kurulumu</a></li>
+      <li><a href="#kalibrasyon">Kalibrasyon</a></li>
+      <li><a href="#dogrulama">İlk Çalıştırma</a></li>
+      <li><a href="#dersler">Bilinen Sorunlar</a></li>
+      <li><a href="#ekler">Ekler: Tam Dosyalar</a></li>
+    </ol>
+    <div class="downloads">
+      <div class="dl-title">İndirmeler</div>
+      <a class="dl-link" href="./TurtleBot_Yapim_Kilavuzu.pdf" download>⤓ Kılavuz (PDF)</a>
+      <a class="dl-link" href="./esp32s3_config.h" download>⤓ esp32s3_config.h</a>
+      <a class="dl-link" href="./install_linorobot2.bash" download>⤓ install_linorobot2.bash</a>
+    </div>
+    <button class="print-btn" onclick="window.print()" type="button">⤓ Sayfadan PDF üret</button>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <p class="kicker">Donanım + Yazılım Referans Belgesi</p>
+      <h1>LinoRobot2 Yapım Kılavuzu</h1>
+      <p class="lede">ESP32-S3 ve Raspberry Pi 4 üzerine, <code>linorobot2</code> / <code>linorobot2_hardware</code> açık kaynak
+      ekosistemiyle inşa edilmiş, özel (custom) mekanik parçalara sahip bir diferansiyel sürüşlü mobil robotun
+      sıfırdan yeniden üretilebilmesi için gereken malzeme listesi, güç mimarisi, kablolama şeması, yazılım kurulumu
+      ve kalibrasyon adımlarının tamamı.</p>
+      <div class="spec-strip">
+        <div><span class="k">Taban</span><span class="v">2WD / Diferansiyel</span></div>
+        <div><span class="k">MCU</span><span class="v">ESP32-S3-DevKitC-1</span></div>
+        <div><span class="k">Bilgisayar</span><span class="v">Raspberry Pi 4</span></div>
+        <div><span class="k">LIDAR</span><span class="v">RPLIDAR A1M8 / S1</span></div>
+        <div><span class="k">Batarya</span><span class="v">3S1P 11.1V LiPo</span></div>
+        <div><span class="k">Yazılım</span><span class="v">ROS 2 Humble</span></div>
+      </div>
+    </header>
+
+    <!-- 1. GENEL BAKIŞ -->
+    <section class="doc" id="genel-bakis">
+      <div class="sec-head"><span class="sec-num">§01</span><h2>Genel Bakış</h2></div>
+      <p class="sec-intro">Bu robot, TurtleBot3 Burger sınıfına yakın ölçülerde ama tamamen özel tasarlanmış bir
+      platformdur: mekanik parçalar (motor oturağı, gövde katmanları, tekerlek ve şaft adaptörü) 3D yazıcıdan
+      basılır; elektronik, firmware ve yazılım tarafı bu kılavuzda anlatılan açık kaynak yığınla kurulur.</p>
+
+      <h3>Sistem mimarisi — üç katman</h3>
+      <p>Kontrol üç ayrı katmana bölünmüştür, her biri farklı bir gerçek-zamanlılık ihtiyacını karşılar:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Katman</th><th>Görev</th><th>Neden ayrı</th></tr></thead>
+          <tbody>
+            <tr><td><strong>ESP32-S3</strong> (firmware)</td><td class="muted">20ms/50Hz döngüyle motor PID, encoder okuma, IMU/odometri yayını</td><td class="muted">Gerçek zamanlı, kesintisiz döngü gerektirir — bir işletim sistemi üzerinde garanti edilemez</td></tr>
+            <tr><td><strong>Raspberry Pi 4</strong> (robot bilgisayarı)</td><td class="muted">micro-ROS agent, LIDAR sürücüsü, EKF, (opsiyonel) SLAM/Nav2</td><td class="muted">ROS 2 çalıştırabilecek güçte ama robot üzerinde taşınabilir, düşük güçlü</td></tr>
+            <tr><td><strong>PC / Workstation</strong> (opsiyonel)</td><td class="muted">RViz görselleştirme, ağır Nav2/SLAM hesaplaması</td><td class="muted">RPi4'ün CPU sınırını aşan görevler için — bkz. §10</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="lbl">Tasarım felsefesi</span>
+        Her teknik karar mümkün olduğunca resmi datasheet veya kaynak koda dayandırılmalı, tahmine dayanmamalıdır.
+        Bu kılavuzdaki her voltaj/akım değeri ilgili üreticinin (Pololu, Slamtec, Infineon/BTS7960 modül üreticisi,
+        Raspberry Pi Vakfı) resmi belgelerinden alınmıştır.
+      </div>
+    </section>
+
+    <!-- 2. MALZEME LİSTESİ -->
+    <section class="doc" id="malzeme">
+      <div class="sec-head"><span class="sec-num">§02</span><h2>Malzeme Listesi</h2></div>
+      <p class="sec-intro">Elektronik ve hesaplama bileşenleri hazır/satın alınan parçalardır; mekanik gövde ise
+      özel tasarımdır (bu kılavuzda genel ilkeleri anlatılır, CAD dosyası kapsam dışıdır).</p>
+
+      <div class="bom-group-title">Hesaplama &amp; Kontrol</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bileşen</th><th>Model</th><th>Adet</th><th>Not</th></tr></thead>
+          <tbody>
+            <tr><td>Mikrodenetleyici</td><td class="num">ESP32-S3-DevKitC-1 (WROOM-1, N8R2)</td><td class="num">1</td><td class="muted">8MB flash / 2MB PSRAM, dahili native USB — harici USB-TTL adaptörü gerekmez</td></tr>
+            <tr><td>Robot bilgisayarı</td><td class="num">Raspberry Pi 4 Model B, 4GB</td><td class="num">1</td><td class="muted">Ubuntu Server 22.04.5 LTS 64-bit (Desktop değil — RAM tasarrufu)</td></tr>
+            <tr><td>microSD kart</td><td class="num">≥32GB, Class 10 / A2</td><td class="num">1</td><td class="muted">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bom-group-title">Tahrik (Motor &amp; Sürücü)</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bileşen</th><th>Model</th><th>Adet</th><th>Not</th></tr></thead>
+          <tbody>
+            <tr><td>Redüktörlü DC motor</td><td class="num">Pololu 25D, 99:1, #3219</td><td class="num">2</td><td class="muted">12V, 100 RPM (yüksüz), dahili 48 CPR Hall encoder, 4mm D-şaft</td></tr>
+            <tr><td>Motor sürücüsü</td><td class="num">BTS7960 (IBT_2 modül kartı)</td><td class="num">2</td><td class="muted">Motor başına 1 sürücü — H-köprü, PWM kontrollü, 6-27V aralığı</td></tr>
+            <tr><td>Tekerlek + şaft adaptörü</td><td class="num">Özel tasarım (3D baskı)</td><td class="num">2 + 2</td><td class="muted">Bkz. §05 — şaft oturma toleransı kritik</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bom-group-title">Algılama</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bileşen</th><th>Model</th><th>Adet</th><th>Not</th></tr></thead>
+          <tbody>
+            <tr><td>2D LIDAR</td><td class="num">RPLIDAR A1M8 <span class="muted">(veya S1)</span></td><td class="num">1</td><td class="muted">Adaptör kartlı (development kit) versiyon — tek USB kablosu yeterli</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bom-group-title">Güç</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bileşen</th><th>Model</th><th>Adet</th><th>Not</th></tr></thead>
+          <tbody>
+            <tr><td>Batarya</td><td class="num">3S1P LiPo, 11.1V, ≥1800mAh, ≥5C</td><td class="num">1</td><td class="muted">C değeri ne kadar yüksekse o kadar iyi — bkz. §03 risk notu</td></tr>
+            <tr><td>Step-down (buck) regülatör</td><td class="num">XL4015E1 modül, ~5A</td><td class="num">1</td><td class="muted">12V(11.1V) → 5V, tüm lojik/bilgisayar hattının tek kaynağı</td></tr>
+            <tr><td>Bağlantı</td><td class="num">Batarya konnektörü, USB Type-C kablo (kesilecek)</td><td class="num">1+1</td><td class="muted">Type-C'den sadece Kırmızı(+5V)/Siyah(GND) lehimlenir</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bom-group-title">Mekanik &amp; Sarf</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bileşen</th><th>Not</th></tr></thead>
+          <tbody>
+            <tr><td>Gövde katmanları, motor oturağı, sürücü braketleri</td><td class="muted">3D baskı, özel tasarım — bkz. §05</td></tr>
+            <tr><td>Distans (spacer) çubuklar + M3 somun</td><td class="muted">Katmanlar arası montaj için</td></tr>
+            <tr><td>M3 vida/somun seti, 1.5mm Allen anahtar</td><td class="muted">Genel montaj + şaft sabitleme</td></tr>
+            <tr><td>Multimetre</td><td class="muted">Alet — voltaj/akım doğrulaması için zorunlu, bkz. §09</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. GÜÇ MİMARİSİ -->
+    <section class="doc" id="guc">
+      <div class="sec-head"><span class="sec-num">§03</span><h2>Güç Mimarisi</h2></div>
+      <p class="sec-intro">Tek bir batarya, tek bir regülatör (XL4015E1) üzerinden tüm sistemi besler. Motorlar
+      ham (regüle edilmemiş) batarya gerilimini alır; RPi4 ve sürücü lojik hatları regüle 5V'u paylaşır;
+      encoderlar ESP32-S3'ün kendi 3.3V pininden beslenir (5V'tan <strong>asla</strong> değil — GPIO'lar 3.3V'a
+      dayanıklıdır).</p>
+
+      <h3>Güç bütçesi (üretici datasheet'lerinden)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bileşen</th><th>Gerilim</th><th>Tipik akım</th><th>Azami / açılış akımı</th></tr></thead>
+          <tbody>
+            <tr><td>Raspberry Pi 4</td><td class="num">5V (USB-C)</td><td class="num">0.21–0.65A <span class="muted">(ölçülen, boşta–tam yük)</span></td><td class="num">3A <span class="muted">(resmi giriş özelliği)</span></td></tr>
+            <tr><td>ESP32-S3-DevKitC-1</td><td class="num">5V (RPi4 USB üzerinden)</td><td class="num">~0.25A</td><td class="num">—</td></tr>
+            <tr><td>RPLIDAR A1M8 (tarayıcı)</td><td class="num">5V</td><td class="num">300–350mA</td><td class="num">500–600mA (açılış)</td></tr>
+            <tr><td>RPLIDAR A1M8 (motor)</td><td class="num">5V <span class="muted">(adaptör kartı üzerinden dahili)</span></td><td class="num">~100mA</td><td class="num">—</td></tr>
+            <tr><td>Pololu 25D motor (×2)</td><td class="num">11.1V (ham)</td><td class="num">~150–300mA / motor <span class="muted">(normal sürüş)</span></td><td class="num">~5.6A / motor <span class="muted">(kilitlenme/stall)</span></td></tr>
+            <tr><td>BTS7960 sürücü (×2)</td><td class="num">5V lojik + 11.1V güç</td><td class="num">~50mA lojik / sürücü</td><td class="num">Modül reyting: ~43A/kanal <span class="muted">(kısa süreli, kullanılmıyor)</span></td></tr>
+            <tr class="total"><td>Toplam (bataryaya yansıyan, en kötü durum)</td><td class="num">11.1V eşdeğer</td><td class="num" colspan="2">~12.6A <span class="muted">(iki motor aynı anda kilitlenirse)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <span class="lbl">Bilinen risk</span>
+        5C'lik bir bataryanın (ör. 1800mAh × 5C = 9A azami) sürekli akım kapasitesi, iki motorun aynı anda
+        kilitlenmesi (engele çarpma) senaryosundaki ~11.2A ihtiyacın <strong>altında</strong> kalır. Firmware'de
+        akım sınırlama yoktur (<code>BATTERY_PIN</code>/<code>USE_INA219</code> tanımlı ama kullanılmaz — bkz. §10).
+        Mümkünse ≥10C, tercihen ≥20C bir batarya seçilmesi önerilir; düşük C'li bir batarya kullanılacaksa risk
+        bilinçli olarak kabul edilmelidir.
+      </div>
+
+      <h3>Güç dağıtım noktası — XL4015E1</h3>
+      <p>XL4015E1'in giriş ve çıkış tarafı her biri ikiye ayrılır:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Taraf</th><th>Kaynak/Hedef</th><th>Gerilim</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2">Giriş</td><td>Batarya (+/−)</td><td class="num">11.1V ham</td></tr>
+            <tr><td>BTS7960 ×2, B+/B− (motor güç girişi)</td><td class="num">11.1V ham</td></tr>
+            <tr><td rowspan="2">Çıkış (regüle)</td><td>Raspberry Pi 4, USB-C güç girişi</td><td class="num">5V</td></tr>
+            <tr><td>BTS7960 ×2, REN/LEN + VCC (lojik/etkinleştirme)</td><td class="num">5V</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. KABLOLAMA ŞEMASI -->
+    <section class="doc" id="kablolama">
+      <div class="sec-head"><span class="sec-num">§04</span><h2>Kablolama Şeması</h2></div>
+      <p class="sec-intro">Aşağıdaki şema, güç hatlarını (renk kodlu) ve sinyal/veri bağlantılarını tek diyagramda
+      gösterir. Tüm pin numaraları <code>esp32s3_config.h</code> kaynağından doğrudan alınmıştır.</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 1180 900" role="img" aria-label="Batarya XL4015E1 regülatörüne ve doğrudan iki BTS7960 sürücüsüne bağlanır; regülatörün 5V çıkışı Raspberry Pi 4'ü ve sürücülerin lojik hattını besler; ESP32-S3 her iki sürücüyü kontrol sinyaliyle ve her iki motorun encoderini okuyarak yönetir; ESP32-S3 ile Raspberry Pi 4 arasında USB üzerinden micro-ROS bağlantısı, Raspberry Pi 4 ile LIDAR arasında USB veri/güç bağlantısı vardır.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <style>
+            .box { fill: none; stroke: currentColor; stroke-width: 1.4; }
+            .box-fill { fill: currentColor; opacity: 0.04; }
+            .lbl-title { font: 600 13px var(--mono, monospace); fill: currentColor; }
+            .lbl-sub { font: 11px var(--mono, monospace); fill: currentColor; opacity: 0.62; }
+            .lbl-wire { font: 11px var(--mono, monospace); }
+            .lbl-pin { font: 600 11px var(--mono, monospace); }
+          </style>
+
+          <!-- BATTERY -->
+          <rect class="box box-fill" x="440" y="24" width="300" height="56" rx="8"/>
+          <text class="lbl-title" x="590" y="50" text-anchor="middle">BATARYA</text>
+          <text class="lbl-sub" x="590" y="68" text-anchor="middle">3S1P LiPo · 11.1V · ≥1800mAh</text>
+
+          <!-- XL4015E1 -->
+          <rect class="box box-fill" x="465" y="150" width="250" height="56" rx="8"/>
+          <text class="lbl-title" x="590" y="176" text-anchor="middle">XL4015E1</text>
+          <text class="lbl-sub" x="590" y="194" text-anchor="middle">Buck Converter · 11.1V→5V · ~5A</text>
+
+          <!-- battery -> xl4015 -->
+          <line x1="590" y1="80" x2="590" y2="150" stroke="var(--rail-raw)" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="600" y="120" fill="var(--rail-raw)">11.1V ham</text>
+
+          <!-- battery -> BTS7960 L (diagonal) -->
+          <path class="box" d="M470,80 Q 260,140 195,258" fill="none" stroke="var(--rail-raw)" stroke-width="2.2" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="230" y="150" fill="var(--rail-raw)">11.1V ham (B+/B−)</text>
+
+          <!-- battery -> BTS7960 R (diagonal) -->
+          <path class="box" d="M710,80 Q 920,140 985,258" fill="none" stroke="var(--rail-raw)" stroke-width="2.2" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="850" y="150" fill="var(--rail-raw)" text-anchor="end">11.1V ham (B+/B−)</text>
+
+          <!-- XL4015 -> BTS7960 L logic -->
+          <path class="box" d="M480,206 Q 330,232 235,258" fill="none" stroke="var(--rail-reg)" stroke-width="2" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="330" y="222" fill="var(--rail-reg)">5V lojik (REN/LEN)</text>
+
+          <!-- XL4015 -> BTS7960 R logic -->
+          <path class="box" d="M700,206 Q 850,232 945,258" fill="none" stroke="var(--rail-reg)" stroke-width="2" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="850" y="222" fill="var(--rail-reg)" text-anchor="end">5V lojik (REN/LEN)</text>
+
+          <!-- XL4015 -> RPi4 -->
+          <line x1="590" y1="206" x2="590" y2="470" stroke="var(--rail-reg)" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="600" y="440" fill="var(--rail-reg)">5V (USB-C)</text>
+
+          <!-- BTS7960 LEFT -->
+          <rect class="box box-fill" x="70" y="258" width="250" height="64" rx="8"/>
+          <text class="lbl-title" x="195" y="284" text-anchor="middle">BTS7960 — SOL</text>
+          <text class="lbl-sub" x="195" y="302" text-anchor="middle">Motor1 sürücü</text>
+          <text class="lbl-sub" x="195" y="316" text-anchor="middle">IN_A=GPIO12 · IN_B=GPIO13</text>
+
+          <!-- BTS7960 RIGHT -->
+          <rect class="box box-fill" x="860" y="258" width="250" height="64" rx="8"/>
+          <text class="lbl-title" x="985" y="284" text-anchor="middle">BTS7960 — SAĞ</text>
+          <text class="lbl-sub" x="985" y="302" text-anchor="middle">Motor2 sürücü</text>
+          <text class="lbl-sub" x="985" y="316" text-anchor="middle">IN_A=GPIO10 · IN_B=GPIO11</text>
+
+          <!-- ESP32-S3 CENTER -->
+          <rect class="box box-fill" x="460" y="258" width="260" height="80" rx="8"/>
+          <text class="lbl-title" x="590" y="286" text-anchor="middle">ESP32-S3-DevKitC-1</text>
+          <text class="lbl-sub" x="590" y="304" text-anchor="middle">firmware.ino · 20ms kontrol döngüsü</text>
+          <text class="lbl-sub" x="590" y="320" text-anchor="middle">3V3 pin → encoder Vcc</text>
+          <text class="lbl-sub" x="590" y="334" text-anchor="middle">BAUDRATE 921600</text>
+
+          <!-- ESP32 -> BTS7960 L control -->
+          <line x1="460" y1="298" x2="320" y2="290" stroke="var(--rail-sig)" stroke-width="2" marker-end="url(#arrow)"/>
+          <text class="lbl-pin" x="388" y="278" fill="var(--rail-sig)" text-anchor="middle">kontrol</text>
+
+          <!-- ESP32 -> BTS7960 R control -->
+          <line x1="720" y1="298" x2="860" y2="290" stroke="var(--rail-sig)" stroke-width="2" marker-end="url(#arrow)"/>
+          <text class="lbl-pin" x="790" y="278" fill="var(--rail-sig)" text-anchor="middle">kontrol</text>
+
+          <!-- MOTOR LEFT -->
+          <rect class="box box-fill" x="70" y="420" width="250" height="70" rx="8"/>
+          <text class="lbl-title" x="195" y="446" text-anchor="middle">Pololu 25D — SOL</text>
+          <text class="lbl-sub" x="195" y="464" text-anchor="middle">99:1 · 48 CPR encoder</text>
+          <text class="lbl-sub" x="195" y="480" text-anchor="middle">Enc A=GPIO6 · B=GPIO7</text>
+
+          <!-- MOTOR RIGHT -->
+          <rect class="box box-fill" x="860" y="420" width="250" height="70" rx="8"/>
+          <text class="lbl-title" x="985" y="446" text-anchor="middle">Pololu 25D — SAĞ</text>
+          <text class="lbl-sub" x="985" y="464" text-anchor="middle">99:1 · 48 CPR encoder</text>
+          <text class="lbl-sub" x="985" y="480" text-anchor="middle">Enc A=GPIO4 · B=GPIO5</text>
+
+          <!-- BTS7960 L -> MOTOR L power -->
+          <line x1="195" y1="322" x2="195" y2="420" stroke="var(--rail-raw)" stroke-width="2.2" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="203" y="378" fill="var(--rail-raw)">M+/M−</text>
+
+          <!-- BTS7960 R -> MOTOR R power -->
+          <line x1="985" y1="322" x2="985" y2="420" stroke="var(--rail-raw)" stroke-width="2.2" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="993" y="378" fill="var(--rail-raw)">M+/M−</text>
+
+          <!-- MOTOR L encoder -> ESP32 -->
+          <path class="box" d="M320,440 Q 400,380 460,318" fill="none" stroke="var(--rail-sig)" stroke-width="2" stroke-dasharray="1,0" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="330" y="390" fill="var(--rail-sig)">encoder (A/B/3V3/GND)</text>
+
+          <!-- MOTOR R encoder -> ESP32 -->
+          <path class="box" d="M860,440 Q 780,380 720,318" fill="none" stroke="var(--rail-sig)" stroke-width="2" marker-end="url(#arrow)"/>
+          <text class="lbl-wire" x="850" y="390" fill="var(--rail-sig)" text-anchor="end">encoder (A/B/3V3/GND)</text>
+
+          <!-- RPi4 -->
+          <rect class="box box-fill" x="465" y="470" width="250" height="70" rx="8"/>
+          <text class="lbl-title" x="590" y="497" text-anchor="middle">Raspberry Pi 4</text>
+          <text class="lbl-sub" x="590" y="515" text-anchor="middle">Ubuntu 22.04 · ROS 2 Humble</text>
+          <text class="lbl-sub" x="590" y="530" text-anchor="middle">micro-ROS agent · Nav2/SLAM</text>
+
+          <!-- ESP32 <-> RPi4 (data, dashed) -->
+          <line x1="590" y1="338" x2="590" y2="470" stroke="var(--rail-data)" stroke-width="2" stroke-dasharray="6,4"/>
+          <text class="lbl-wire" x="500" y="405" fill="var(--rail-data)" text-anchor="end">USB · micro-ROS serial</text>
+
+          <!-- LIDAR -->
+          <rect class="box box-fill" x="465" y="590" width="250" height="60" rx="8"/>
+          <text class="lbl-title" x="590" y="616" text-anchor="middle">RPLIDAR A1M8</text>
+          <text class="lbl-sub" x="590" y="634" text-anchor="middle">USB adaptör kartı (veri + güç)</text>
+
+          <!-- RPi4 <-> LIDAR (data, dashed) -->
+          <line x1="590" y1="540" x2="590" y2="590" stroke="var(--rail-data)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+
+          <!-- GND note -->
+          <rect x="70" y="700" width="1040" height="70" rx="8" class="box" stroke-dasharray="3,3" opacity="0.7"/>
+          <text class="lbl-sub" x="590" y="726" text-anchor="middle" opacity="0.9">⏚ ORTAK GND — kritik kural</text>
+          <text class="lbl-wire" x="590" y="746" text-anchor="middle" opacity="0.75">Batarya(−) · XL4015E1 GND · her iki BTS7960 GND · ESP32-S3 GND · RPi4 GND (XL4015E1 üzerinden) — tek noktada birleşmeli</text>
+        </svg>
+        <div class="legend">
+          <div><span class="sw" style="background:var(--rail-raw)"></span>11.1V ham (batarya/motor gücü)</div>
+          <div><span class="sw" style="background:var(--rail-reg)"></span>5V regüle (lojik/RPi4)</div>
+          <div><span class="sw" style="background:var(--rail-sig)"></span>3.3V / kontrol-sinyal</div>
+          <div><span class="sw" style="background:var(--rail-data);border-top:2px dashed var(--rail-data);height:0"></span>USB / veri hattı</div>
+        </div>
+        <figcaption>Güç, batarya(11.1V)'dan hem doğrudan iki BTS7960 sürücüsüne hem de XL4015E1 üzerinden 5V'a
+        düşürülüp RPi4 ve sürücü lojik hatlarına dağılır. ESP32-S3, her iki sürücüyü kontrol sinyaliyle yönetir
+        ve her iki motorun encoderini okur; RPi4 ile arasında ayrı bir USB veri hattı (micro-ROS) vardır.</figcaption>
+      </figure>
+
+      <h3>Tam pin haritası</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>İşlev</th><th>ESP32-S3 Pini</th><th>Kaynak</th></tr></thead>
+          <tbody>
+            <tr><td>Motor1 (SOL) sürücü IN_A / IN_B</td><td class="num"><span class="pin">GPIO12</span> / <span class="pin">GPIO13</span></td><td class="muted"><code>esp32s3_config.h</code></td></tr>
+            <tr><td>Motor2 (SAĞ) sürücü IN_A / IN_B</td><td class="num"><span class="pin">GPIO10</span> / <span class="pin">GPIO11</span></td><td class="muted"><code>esp32s3_config.h</code></td></tr>
+            <tr><td>Motor1 (SOL) encoder A / B</td><td class="num"><span class="pin">GPIO6</span> / <span class="pin">GPIO7</span></td><td class="muted"><code>esp32s3_config.h</code></td></tr>
+            <tr><td>Motor2 (SAĞ) encoder A / B</td><td class="num"><span class="pin">GPIO4</span> / <span class="pin">GPIO5</span></td><td class="muted"><code>esp32s3_config.h</code></td></tr>
+            <tr><td>Encoder Vcc (her ikisi)</td><td class="num"><span class="pin">3V3</span> <span class="muted">(GPIO değil, güç pini)</span></td><td class="muted">Board üzerindeki 3.3V çıkışı — 5V'tan asla beslenmez</td></tr>
+            <tr><td>I2C (gelecekteki IMU için, opsiyonel)</td><td class="num"><span class="pin">SDA=GPIO8</span> / <span class="pin">SCL=GPIO9</span></td><td class="muted"><code>esp32s3_config.h</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="lbl">Pololu 6 telli demet renk kodu</span>
+        Kırmızı=M+ · Siyah=M− · Sarı=Enc A · Beyaz=Enc B · Mavi=Enc Vcc(3.3V) · Yeşil=Enc GND
+      </div>
+    </section>
+
+    <!-- 5. MEKANİK MONTAJ -->
+    <section class="doc" id="mekanik">
+      <div class="sec-head"><span class="sec-num">§05</span><h2>Mekanik Montaj</h2></div>
+      <p class="sec-intro">Gövde, tek seferde değil <strong>alttan yukarıya doğru katman katman</strong> monte
+      edilir; her katman bir öncekinin üzerine sarı spacer çubuklar ve somunlarla oturur.</p>
+
+      <ol class="steps">
+        <li><h4>Katman 1 — Motorlar &amp; sürücüler</h4><p>İki Pololu motor ve iki BTS7960 sürücü en alt katmana sabitlenir. Motorların hangisinin SOL/SAĞ olacağı burada fiziksel olarak belirlenir — pin haritasıyla (§04) tutarlı olmalı.</p></li>
+        <li><h4>Katman 2 — ESP32-S3 &amp; XL4015E1</h4><p>Mikrodenetleyici ve güç regülatörü ikinci katmana yerleştirilir; motor/encoder kabloları bu katmana çıkar.</p></li>
+        <li><h4>Katman 3 — Raspberry Pi 4</h4><p>Üçüncü katman RPi4'ü taşır; XL4015E1'in 5V çıkışı buraya USB-C ile bağlanır.</p></li>
+        <li><h4>Katman 4 — LIDAR</h4><p>En üst katman LIDAR'ı taşır — 360° görüş açısı için diğer katmanların üzerinde, engelsiz bir konumda olmalı.</p></li>
+        <li><h4>Tekerlek montajı</h4><p>Motor D-şaftına önce şaft adaptörü, sonra tekerlek geçirilir. <strong>Bu arayüz, projenin en kritik tolerans noktasıdır</strong> — aşağıdaki tasarım notuna dikkat edin.</p></li>
+      </ol>
+
+      <div class="callout warn">
+        <span class="lbl">Tasarım notu — şaft adaptörü toleransı</span>
+        Motor şaftı 4mm D-profil, plastik (3D baskı) bir adaptöre <em>zorlanarak</em> geçirilirse, plastik mikro
+        düzeyde deforme olup merkezden kayar — bu, tekerlek dönerken gözle görülür bir sallanmaya ("8 çizme")
+        yol açar. Doğru yaklaşım: deliği şafttan hafif büyük (4.0–4.2mm) tasarlayıp hiç zorlamadan geçirmek,
+        sabitlemeyi bir <strong>set vidası + M3 somun cebi</strong> (şaftın düz D-yüzeyine bastıran) ile yapmak,
+        delik çevresinde en az 3–4mm dolu et kalınlığı bırakmak, ve baskı sonrası deliği gerçek bir 4mm matkap
+        ucuyla raybalamak.
+      </div>
+    </section>
+
+    <!-- 6. ESP32-S3 FIRMWARE -->
+    <section class="doc" id="esp32-kurulum">
+      <div class="sec-head"><span class="sec-num">§06</span><h2>ESP32-S3 Firmware Kurulumu</h2></div>
+      <p class="sec-intro">Yükleme yöntemi PlatformIO'dur (Arduino IDE değil) — micro-ROS yalnızca PlatformIO ile
+      derlenebilir. ESP32-S3'ün dahili native USB'si sayesinde ayrı bir USB-TTL adaptörüne gerek yoktur.</p>
+
+      <ol class="steps">
+        <li><h4>PlatformIO CLI kurulumu</h4><pre><code>pip install platformio</code></pre></li>
+        <li><h4>linorobot2_hardware deposunu klonla</h4><pre><code>git clone -b humble https://github.com/linorobot/linorobot2_hardware.git
+cd linorobot2_hardware/firmware</code></pre></li>
+        <li><h4>Doğru config'i doğrula</h4><p><code>config.h</code> içinde <code>USE_ESP32S3_CONFIG</code> tanımlı olmalı; motor/pin/kalibrasyon değerleri <code>config/custom/esp32s3_config.h</code> içindedir (§04'teki pin haritasıyla aynı).</p></li>
+        <li><h4>Derle ve yükle</h4><pre><code>pio run -e esp32s3 -t upload --upload-port /dev/ttyACM0</code></pre><p>Native USB portunda otomatik reset devresi olmadığından, yükleme sırasında <strong>BOOT</strong> tuşuna basılı tutup <strong>RESET</strong>'e dokunmak gerekebilir.</p></li>
+        <li><h4>Doğru portu ayırt et</h4><p>Kartın iki USB-C portu vardır: <code>idVendor=303a</code> (native USB — Serial/micro-ROS için kullanılan budur) ve <code>idVendor=1a86</code> (UART köprü — sadece flaşlama). Karıştırmayın.</p></li>
+      </ol>
+    </section>
+
+    <!-- 7. RPI4 KURULUMU -->
+    <section class="doc" id="rpi4-kurulum">
+      <div class="sec-head"><span class="sec-num">§07</span><h2>Raspberry Pi 4 Kurulumu</h2></div>
+
+      <ol class="steps">
+        <li><h4>İşletim sistemi</h4><p>Raspberry Pi Imager ile <strong>Ubuntu Server 22.04.5 LTS (64-bit)</strong> — Desktop değil, 32-bit değil. Gelişmiş ayarlardan SSH + kullanıcı + WiFi önceden yapılandırılabilir.</p></li>
+        <li><h4>ROS 2 Humble</h4><pre><code>sudo apt install ros-humble-ros-base
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc</code></pre></li>
+        <li><h4>micro-ROS agent</h4><pre><code>mkdir -p ~/microros_ws/src && cd ~/microros_ws/src
+git clone -b humble https://github.com/micro-ROS/micro_ros_setup.git
+cd ~/microros_ws && colcon build
+source install/local_setup.bash
+ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh</code></pre><p>Düşük RAM'li kartlarda (1-2GB) derleme sırasında geçici bir swap dosyası gerekebilir — <code>/etc/fstab</code>'a eklenmezse her reboot'ta kaybolur.</p></li>
+        <li><h4>Tam linorobot2 kurulumu (Nav2/SLAM/URDF)</h4><pre><code>wget https://raw.githubusercontent.com/linorobot/linorobot2/humble/install_linorobot2.bash
+bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modelidir — desteklenenler arasında <code>a1</code>, <code>s1</code>, <code>s2</code>, <code>s3</code> ve diğerleri vardır (<code>sllidar_ros2</code> paketi üzerinden).</p></li>
+        <li><h4>Bringup</h4><pre><code>ros2 launch linorobot2_bringup bringup.launch.py micro_ros_baudrate:=921600</code></pre><p><code>micro_ros_baudrate</code> mutlaka <code>esp32s3_config.h</code>'deki <code>BAUDRATE</code> (921600) ile eşleşmelidir — varsayılan (115200) farklıdır.</p></li>
+      </ol>
+    </section>
+
+    <!-- 8. KALİBRASYON -->
+    <section class="doc" id="kalibrasyon">
+      <div class="sec-head"><span class="sec-num">§08</span><h2>Kalibrasyon</h2></div>
+      <p class="sec-intro">ROS2'ye hiç bağlanmadan, repo'nun kendi <code>calibration/</code> firmware'iyle motor/tekerlek
+      değerleri ölçülür.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Parametre</th><th>Nasıl ölçülür</th><th>Bu projede ölçülen değer</th></tr></thead>
+          <tbody>
+            <tr><td><code>MOTOR_MAX_RPM</code></td><td class="muted">Üreticinin datasheet'i</td><td class="num">100 RPM (yüksüz, 12V)</td></tr>
+            <tr><td><code>COUNTS_PER_REV</code></td><td class="muted">Seri monitörden <code>sample</code> komutu, motor başına</td><td class="num">M1=2103 · M2=2146</td></tr>
+            <tr><td><code>WHEEL_DIAMETER</code></td><td class="muted">Kumpas/cetvel ile — <strong>çap</strong>, yarıçap değil</td><td class="num">0.066 m</td></tr>
+            <tr><td><code>LR_WHEELS_DISTANCE</code></td><td class="muted">Sol-sağ tekerlek merkezleri arası</td><td class="num">0.160 m</td></tr>
+            <tr><td><code>K_P / K_I / K_D</code></td><td class="muted">Stok değerlerle başla, sadece gerekirse ayarla</td><td class="num">0.6 / 0.8 / 0.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <span class="lbl">Bilinen firmware hatası (upstream)</span>
+        Kalibrasyon firmware'inin <code>sampleMotors()</code> fonksiyonu, <code>spin()</code> çağrısını bir
+        <code>while(true)</code> döngüsü içinde saniyede yüz binlerce kez tekrarlarsa, ESP32'nin PWM donanımı
+        (LEDC) geçerli bir sinyal üretemez ve motor <strong>hiç dönmez</strong>. Çözüm: <code>spin()</code>'i
+        döngünün <em>dışına, öncesine</em> taşımak — döngü sadece zamanlamayı kontrol etmeli, PWM komutunu
+        tekrar tekrar göndermemelidir.
+      </div>
+    </section>
+
+    <!-- 9. İLK ÇALIŞTIRMA -->
+    <section class="doc" id="dogrulama">
+      <div class="sec-head"><span class="sec-num">§09</span><h2>İlk Çalıştırma ve Doğrulama</h2></div>
+      <p class="sec-intro">Güç vermeden önce ve her aşamada, sırayla doğrulanması gereken kontrol listesi:</p>
+      <ul class="checklist">
+        <li><span class="box"></span>Multimetre ile XL4015E1 çıkışını RPi4'e bağlamadan <strong>önce</strong> ölç — 5.0–5.2V aralığında olmalı</li>
+        <li><span class="box"></span>Tüm GND'lerin (batarya, regülatör, her iki sürücü, ESP32-S3) tek noktada ortak olduğunu süreklilik testiyle doğrula</li>
+        <li><span class="box"></span>Encoder Vcc'nin 3.3V'a bağlı olduğunu, <strong>ESP32'nin RST pinine değil</strong>, teyit et (bu iki pin çoğu kartta yan yanadır — kolay karışır)</li>
+        <li><span class="box"></span>Motor sürücüsünü güçlendirmeden ESP32↔RPi4 micro-ROS testine <strong>başlama</strong> — güçsüz sürücü, seri hatta elektriksel gürültü bindirip agent'ın çökmesine yol açabilir</li>
+        <li><span class="box"></span><code>ros2 topic echo /odom/unfiltered</code> ile canlı encoder verisini doğrula</li>
+        <li><span class="box"></span>Teleop ile dört yönü de (ileri/geri/sol/sağ) tek tek test et, motor kimliğinin (SOL=Motor1/SAĞ=Motor2) doğru olduğunu gözle onayla</li>
+        <li><span class="box"></span>LIDAR'ı tek başına başlatıp (<code>ros2 launch sllidar_ros2 sllidar_a1_launch.py</code>) "health status: OK" logunu gör</li>
+        <li><span class="box"></span>Tam <code>bringup.launch.py</code> + <code>slam.launch.py</code> ile RViz'de canlı harita oluşumunu izle</li>
+      </ul>
+    </section>
+
+    <!-- 10. BİLİNEN SORUNLAR -->
+    <section class="doc" id="dersler">
+      <div class="sec-head"><span class="sec-num">§10</span><h2>Bilinen Sorunlar ve Dersler</h2></div>
+      <p class="sec-intro">Bu projenin geliştirilmesi sırasında karşılaşılan ve kök nedeni bulunan sorunlar —
+      sıfırdan aynı yığını kuran biri için en değerli kısım muhtemelen burasıdır.</p>
+      <div class="gotchas">
+        <div class="gotcha"><span class="tag">Elektriksel</span><h4>Ortak GND unutulursa</h4><p>Belirli yön komutları çalışırken diğerleri "tekler", akım 0A okunur. Her fiziksel yeniden kablolamadan sonra ortak GND'yi elle kontrol edin.</p></div>
+        <div class="gotcha"><span class="tag">Firmware</span><h4>Encoder pull-down varsayılanı</h4><p><code>ESP32Encoder</code> kütüphanesinin varsayılanı pull-DOWN'dır; açık-kolektör encoderlar bununla hiç veri üretmez. <code>useInternalWeakPullResistors = puType::up;</code> şart.</p></div>
+        <div class="gotcha"><span class="tag">Firmware</span><h4>PWM tight-loop hatası</h4><p><code>spin()</code>'in bir döngü içinde tekrar tekrar çağrılması LEDC donanımını bozar. Bkz. §08.</p></div>
+        <div class="gotcha"><span class="tag">Kablolama</span><h4>RST / 3.3V pin karışıklığı</h4><p>Bu iki pin çoğu ESP32 kartında yan yanadır. Encoder Vcc'nin RST'ye bağlanması, kartın kendini sürekli resetlemesine ve gürültülü encoder verisine yol açar.</p></div>
+        <div class="gotcha"><span class="tag">Kinematik</span><h4>Motor1/Motor2 kimlik takası</h4><p>Yalnızca düz gitmek doğru ama dönüşler ters çalışıyorsa, tek bir motorun <code>_INV</code> bayrağını değil, <strong>Motor1↔Motor2'nin tüm config bloğunu</strong> (pin, encoder, INV) birlikte takas edin.</p></div>
+        <div class="gotcha"><span class="tag">Performans</span><h4>RPi4 + RViz üzerinden WiFi</h4><p>RViz'i WiFi üzerinden sürekli açık bırakmak, ROS2/DDS'in geri basınç (back-pressure) yaşamasına ve <code>micro_ros_agent</code>'ın senkron kaybetmesine yol açabilir. Sadece kontrol için aç, sonra kapat.</p></div>
+        <div class="gotcha"><span class="tag">Mekanik</span><h4>Şaft-adaptör toleransı</h4><p>Bkz. §05 — zorlanarak takılan plastik adaptör tekerlek sallanmasının en sık nedenidir.</p></div>
+        <div class="gotcha"><span class="tag">Güç</span><h4>Sürücü güçsüzken test etmeyin</h4><p>Sadece ESP32+RPi4 test edilirken BTS7960 güçsüz bırakılırsa, PWM hattı seri iletişime gürültü bindirip <code>NotEnoughMemoryException</code> ile agent'ı çökertebilir.</p></div>
+      </div>
+    </section>
+
+
+    <!-- 11. EKLER: TAM DOSYALAR -->
+    <section class="doc" id="ekler">
+      <div class="sec-head"><span class="sec-num">§11</span><h2>Ekler — Tam Dosya İçerikleri</h2></div>
+      <p class="sec-intro">Bu kılavuzda referans verilen iki dosyanın <strong>tam, değiştirilmemiş içeriği</strong> —
+      kopyalayıp doğrudan kullanabilirsiniz.</p>
+
+      <h3>esp32s3_config.h <span class="file-meta">— linorobot2_hardware/config/custom/</span></h3>
+      <p class="file-note">Bu projede fiilen kullanılan, doğrulanmış pin/kalibrasyon değerleriyle.</p>
+      <pre class="file-block"><code>// ============================================================================
+// LinoRobot2 Projesi — ESP32-S3 Donanım Yapılandırması
+// ============================================================================
+// Bu robotta fiilen kullanılan yapılandırma dosyasıdır. linorobot2_hardware
+// projesinin ESP32-S3 config şablonu temel alınmış, aşağıdaki değerler bu
+// robota özel olarak fiziksel ölçüm ve kalibrasyonla belirlenmiştir:
+//
+//   Motor            : 2x Pololu 25D, 99:1 dişli oranı, #3219 (48 CPR encoder)
+//   Sürücü           : 2x BTS7960 (IBT_2)
+//   MOTOR_MAX_RPM    : Pololu #3219 datasheet&#x27;inden (100 RPM, yüksüz @ 12V)
+//   COUNTS_PER_REV1/2: `calibration/` firmware&#x27;i ile `sample` komutuyla ölçüldü
+//                      (Motor1/SOL=2103, Motor2/SAĞ=2146)
+//   WHEEL_DIAMETER   : Kumpasla fiziksel ölçüm (66mm = 0.066m)
+//   Pin ataması      : Motor1(SOL)=GPIO12/13+encoder GPIO6/7,
+//                      Motor2(SAĞ)=GPIO10/11+encoder GPIO4/5
+//   WIFI_* / AGENT_IP/ SYSLOG_*: Bu projede kullanılmıyor — ESP32↔RPi4
+//                      bağlantısı USB seri (micro-ROS, 921600 baud) üzerinden
+//
+// Aşağıdaki lisans bildirimi, temel alınan orijinal linorobot2_hardware
+// şablonuna aittir (Apache 2.0 — değiştirilmeden korunmuştur).
+// ============================================================================
+//
+// Copyright (c) 2021 Juan Miguel Jimeno
+//
+// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#ifndef ESP32S3_CONFIG_H
+#define ESP32S3_CONFIG_H
+
+#define LED_PIN LED_BUILTIN //used for debugging status
+
+//uncomment the base you&#x27;re building
+#define LINO_BASE DIFFERENTIAL_DRIVE       // 2WD and Tracked robot w/ 2 motors
+// #define LINO_BASE SKID_STEER            // 4WD robot
+// #define LINO_BASE MECANUM               // Mecanum drive robot
+
+//uncomment the motor driver you&#x27;re using
+// #define USE_GENERIC_2_IN_MOTOR_DRIVER      // Motor drivers with 2 Direction Pins(INA, INB) and 1 PWM(ENABLE) pin ie. L298, L293, VNH5019
+// #define USE_GENERIC_1_IN_MOTOR_DRIVER   // Motor drivers with 1 Direction Pin(INA) and 1 PWM(ENABLE) pin.
+#define USE_BTS7960_MOTOR_DRIVER        // BTS7970 Motor Driver using A4950 (&lt;40V) module or DRV8833 (&lt;10V)
+// #define USE_ESC_MOTOR_DRIVER            // Motor ESC for brushless motors
+
+//uncomment the IMU you&#x27;re using
+// #define USE_GY85_IMU
+// #define USE_MPU6050_IMU
+// #define USE_MPU9150_IMU
+// #define USE_MPU9250_IMU
+// #define USE_QMI8658_IMU
+// #define USE_HMC5883L_MAG
+// #define USE_AK8963_MAG
+// #define USE_AK8975_MAG
+// #define USE_AK09918_MAG
+// #define USE_QMC5883L_MAG
+// #define MAG_BIAS { 0, 0, 0 }
+// #define IMU_TWEAK {}
+// #define MAG_TWEAK {}
+
+#define ACCEL_COV { 0.01, 0.01, 0.01 }
+#define GYRO_COV { 0.001, 0.001, 0.001 }
+#define ORI_COV { 0.01, 0.01, 0.01 }
+#define MAG_COV { 1e-12, 1e-12, 1e-12 }
+#define POSE_COV { 0.001, 0.001, 0.001, 0.001, 0.001, 0.001 }
+#define TWIST_COV { 0.001, 0.001, 0.001, 0.003, 0.003, 0.003 }
+
+#define K_P 0.6                             // P constant
+#define K_I 0.8                             // I constant
+#define K_D 0.5                             // D constant
+
+/*
+ROBOT ORIENTATION
+         FRONT
+    MOTOR1  MOTOR2  (2WD/ACKERMANN)
+    MOTOR3  MOTOR4  (4WD/MECANUM)
+         BACK
+*/
+
+//define your robot&#x27; specs here
+#define MOTOR_MAX_RPM 100                   // motor&#x27;s max RPM (Pololu #3207, 100 RPM no-load @ 12V)
+#define MAX_RPM_RATIO 0.85                  // max RPM allowed for each MAX_RPM_ALLOWED = MOTOR_MAX_RPM * MAX_RPM_RATIO
+#define MOTOR_OPERATING_VOLTAGE 12          // motor&#x27;s operating voltage (used to calculate max RPM)
+#define MOTOR_POWER_MAX_VOLTAGE 12          // max voltage of the motor&#x27;s power source (used to calculate max RPM)
+#define MOTOR_POWER_MEASURED_VOLTAGE 12     // current voltage reading of the power connected to the motor (used for calibration)
+#define COUNTS_PER_REV1 2103                 // wheel1 encoder&#x27;s no of ticks per rev (reverted 2026-07-23 — recalibrated value 2186 did not fix left-lag imbalance, reverted back)
+#define COUNTS_PER_REV2 2146                 // wheel2 encoder&#x27;s no of ticks per rev (reverted 2026-07-23, same reason)
+#define COUNTS_PER_REV3 450                 // wheel3 encoder&#x27;s no of ticks per rev
+#define COUNTS_PER_REV4 450                 // wheel4 encoder&#x27;s no of ticks per rev
+#define WHEEL_DIAMETER 0.066                // wheel&#x27;s diameter in meters
+#define LR_WHEELS_DISTANCE 0.160            // distance between left and right wheels
+#define PWM_BITS 10                         // PWM Resolution of the microcontroller
+#define PWM_FREQUENCY 20000                 // PWM Frequency
+
+// INVERT ENCODER COUNTS
+#define MOTOR1_ENCODER_INV true
+#define MOTOR2_ENCODER_INV false
+#define MOTOR3_ENCODER_INV false
+#define MOTOR4_ENCODER_INV false
+
+// INVERT MOTOR DIRECTIONS
+#define MOTOR1_INV true
+#define MOTOR2_INV false
+#define MOTOR3_INV false
+#define MOTOR4_INV false
+
+// ENCODER PINS
+#define MOTOR1_ENCODER_A 6
+#define MOTOR1_ENCODER_B 7
+
+#define MOTOR2_ENCODER_A 4
+#define MOTOR2_ENCODER_B 5
+
+#define MOTOR3_ENCODER_A 39
+#define MOTOR3_ENCODER_B 40
+
+#define MOTOR4_ENCODER_A 41
+#define MOTOR4_ENCODER_B 42
+
+// MOTOR PINS
+#ifdef USE_GENERIC_2_IN_MOTOR_DRIVER
+  #define MOTOR1_PWM 21
+  #define MOTOR1_IN_A 20
+  #define MOTOR1_IN_B 1
+
+  #define MOTOR2_PWM 5
+  #define MOTOR2_IN_A 6
+  #define MOTOR2_IN_B 8
+
+  #define MOTOR3_PWM 22
+  #define MOTOR3_IN_A 23
+  #define MOTOR3_IN_B 0
+
+  #define MOTOR4_PWM 4
+  #define MOTOR4_IN_A 3
+  #define MOTOR4_IN_B 2
+
+  #define PWM_MAX (pow(2, PWM_BITS) - 1)
+  #define PWM_MIN -PWM_MAX
+#endif
+
+#ifdef USE_GENERIC_1_IN_MOTOR_DRIVER
+  #define MOTOR1_PWM 21
+  #define MOTOR1_IN_A 20
+  #define MOTOR1_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define MOTOR2_PWM 5
+  #define MOTOR2_IN_A 6
+  #define MOTOR2_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define MOTOR3_PWM 22
+  #define MOTOR3_IN_A 23
+  #define MOTOR3_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define MOTOR4_PWM 4
+  #define MOTOR4_IN_A 3
+  #define MOTOR4_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define PWM_MAX (pow(2, PWM_BITS) - 1)
+  #define PWM_MIN -PWM_MAX
+#endif
+
+#ifdef USE_BTS7960_MOTOR_DRIVER
+  #define MOTOR1_PWM -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR1_IN_A 12
+  #define MOTOR1_IN_B 13
+
+  #define MOTOR2_PWM -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR2_IN_A 10
+  #define MOTOR2_IN_B 11
+
+  #define MOTOR3_PWM -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR3_IN_A 14
+  #define MOTOR3_IN_B 15
+
+  #define MOTOR4_PWM -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR4_IN_A 16
+  #define MOTOR4_IN_B 17
+
+  #define PWM_MAX (pow(2, PWM_BITS) - 1)
+  #define PWM_MIN -PWM_MAX
+#endif
+
+#ifdef USE_ESC_MOTOR_DRIVER
+  #define MOTOR1_PWM 21
+  #define MOTOR1_IN_A -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR1_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define MOTOR2_PWM 5
+  #define MOTOR2_IN_A -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR2_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define MOTOR3_PWM 22
+  #define MOTOR3_IN_A -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR3_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define MOTOR4_PWM 4
+  #define MOTOR4_IN_A -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+  #define MOTOR4_IN_B -1 //DON&#x27;T TOUCH THIS! This is just a placeholder
+
+  #define PWM_MAX 400
+  #define PWM_MIN -PWM_MAX
+#endif
+
+#define AGENT_IP { 192, 168, 1, 100 }  // eg IP of the desktop computer
+#define AGENT_PORT 8888
+#define WIFI_SSID &quot;WIFI_SSID&quot;
+#define WIFI_PASSWORD &quot;WIFI_PASSWORD&quot;
+// Enable WiFi with null terminated list of multiple APs SSID and password
+// #define WIFI_AP_LIST {{&quot;WIFI_SSID&quot;, &quot;WIFI_PASSWORD&quot;}, {NULL}}
+#define WIFI_MONITOR 2 // min. period to send wifi signal strength to syslog
+// #define USE_ARDUINO_OTA
+// #define USE_SYSLOG
+#define SYSLOG_SERVER { 192, 168, 1, 100 }  // eg IP of the desktop computer
+#define SYSLOG_PORT 514
+#define DEVICE_HOSTNAME &quot;esp32s3&quot;
+#define APP_NAME &quot;hardware&quot;
+// #define USE_LIDAR_UDP
+#define LIDAR_RXD 2
+// #define LIDAR_PWM 15
+#define LIDAR_SERIAL 1 // uart number
+#define LIDAR_BAUDRATE 230400
+#define LIDAR_SERVER { 192, 168, 1, 100 }  // eg IP of the desktop computer
+#define LIDAR_PORT 8889
+#define BAUDRATE 921600
+#define SDA_PIN 8 // specify I2C pins
+#define SCL_PIN 9
+#define NODE_NAME &quot;esp32s3&quot;
+// #define TOPIC_PREFIX &quot;esp32s3/&quot;
+
+// battery voltage ADC pin
+#define BATTERY_PIN 1
+// 3.3V ref, 12 bits ADC, 33k + 10k voltage divider
+// #define USE_ADC_LUT
+#ifdef USE_ADC_LUT
+const int16_t ADC_LUT[4096] = { /* insert adc_calibrate data here */ };
+#define BATTERY_ADJUST(v) (ADC_LUT[v] * (3.3 / 4096 * (33 + 10) / 10 * 1.0))
+#else
+#define BATTERY_ADJUST(v) ((v) * (3.3 / 4096 * (33 + 10) / 10))
+#endif
+// #define USE_INA219
+// #define TRIG_PIN 31 // ultrasonic sensor HC-SR04
+// #define ECHO_PIN 32
+#define USE_SHORT_BRAKE // for shorter stopping distance
+// #define WDT_TIMEOUT 60 // Sec
+#define BOARD_INIT { \
+    Wire.begin(SDA_PIN, SCL_PIN); \
+    Wire.setClock(400000); \
+}
+// #define BOARD_INIT_LATE {}
+// #define BOARD_LOOP {}
+
+#ifdef USE_SYSLOG
+#define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){ \
+    syslog(LOG_ERR, &quot;%s RCCHECK failed %d&quot;, __FUNCTION__, temp_rc); \
+    }}
+#else
+#define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){ \
+    flashLED(3); \
+    }} // do not block
+#endif
+
+#endif
+</code></pre>
+
+      <h3>install_linorobot2.bash <span class="file-meta">— RPi4 kurulum betiği, proje notuyla</span></h3>
+      <p class="file-note">Betik mantığı upstream'den değiştirilmemiştir (güvenilirlik için); başına bu robotta tam olarak nasıl çalıştırıldığını açıklayan bir proje notu eklenmiştir.</p>
+      <pre class="file-block"><code>#!/usr/bin/env bash
+# ==============================================================================
+# LinoRobot2 Projesi — Raspberry Pi 4 Kurulum Notu
+# ==============================================================================
+# Bu robotta şu şekilde çalıştırılmıştır:
+#
+#     $ bash install_linorobot2.bash 2wd a1
+#
+# (2wd = diferansiyel sürüşlü taban; a1 = RPLIDAR A1M8. Proje başlangıçta
+#  RPLIDAR S1 ile kurulmuş, sonradan A1M8&#x27;e geçilmiş — &quot;s1&quot; argümanıyla da
+#  aynı script sorunsuz çalışmaktadır, ikisi de sllidar_ros2 sürücüsünü kurar.)
+#
+# Betiğin kendisi resmi linorobot2 deposundan (humble dalı) değiştirilmeden
+# alınmıştır — aşağıdaki lisans/telif bildirimi orijinal yazara aittir.
+# ==============================================================================
+#
+# Copyright (c) 2021 Juan Miguel Jimeno
+#
+# Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http:#www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -e
+
+ROSDISTRO=&quot;$(printenv ROS_DISTRO)&quot;
+BASE=$1
+LASER_SENSOR=$2
+DEPTH_SENSOR=$3
+ARCH=&quot;$(uname -m)&quot;
+WORKSPACE=&quot;$HOME/linorobot2_ws&quot;
+
+ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
+DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i oakd oakdlite oakdpro)
+LASER_SENSOR_ARRAY=(ydlidar xv11 ld06 ld19 stl27l a1 a2 a3 c1 s1 s2 s3)
+LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
+
+if [ -z &quot;$LASER_SENSOR&quot; ]
+    then
+        LASER_SENSOR=&quot;&quot;
+fi
+
+if [ -z &quot;$DEPTH_SENSOR&quot; ]
+    then
+        DEPTH_SENSOR=&quot;&quot;
+fi
+
+function install_cuda_jetson {
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/sbsa/cuda-ubuntu2004.pin
+    sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    wget http://developer.download.nvidia.com/compute/cuda/11.4.2/local_installers/cuda-repo-ubuntu2004-11-4-local_11.4.2-470.57.02-1_arm64.deb
+    sudo dpkg -i cuda-repo-ubuntu2004-11-4-local_11.4.2-470.57.02-1_arm64.deb
+    sudo apt-key add /var/cuda-repo-ubuntu2004-11-4-local/7fa2af80.pub #verify this
+    sudo apt-get update
+    sudo apt-get -y install cuda
+    # Errors were encountered while processing:
+    #  /tmp/apt-dpkg-install-TvUCLd/14-libnvidia-compute-470_470.57.02-0ubuntu1_arm64.deb
+    #  /tmp/apt-dpkg-install-TvUCLd/18-libnvidia-gl-470_470.57.02-0ubuntu1_arm64.deb
+    # E: Sub-process /usr/bin/dpkg returned an error code (1)
+}
+
+function install_xv11 {
+    cd $WORKSPACE
+    git clone https://github.com/mjstn/xv_11_driver src/xv_11_driver
+    colcon build
+    source $WORKSPACE/install/setup.bash
+}
+
+function install_ydlidar {
+    cd /tmp
+    git clone https://github.com/YDLIDAR/YDLidar-SDK.git
+    mkdir YDLidar-SDK/build
+    cd YDLidar-SDK/build
+    cmake ..
+    make
+    sudo make install
+    cd $WORKSPACE
+    git clone https://github.com/YDLIDAR/ydlidar_ros2_driver src/ydlidar_ros2_driver
+    chmod 0777 src/ydlidar_ros2_driver/startup/*
+    sudo echo  &#x27;KERNEL==&quot;ttyUSB*&quot;, ATTRS{idVendor}==&quot;10c4&quot;, ATTRS{idProduct}==&quot;ea60&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;ydlidar&quot;&#x27; &gt;/etc/udev/rules.d/ydlidar.rules
+    sudo echo  &#x27;KERNEL==&quot;ttyACM*&quot;, ATTRS{idVendor}==&quot;0483&quot;, ATTRS{idProduct}==&quot;5740&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;ydlidar&quot;&#x27; &gt;/etc/udev/rules.d/ydlidar-V2.rules
+    sudo echo  &#x27;KERNEL==&quot;ttyUSB*&quot;, ATTRS{idVendor}==&quot;067b&quot;, ATTRS{idProduct}==&quot;2303&quot;, MODE:=&quot;0666&quot;, GROUP:=&quot;dialout&quot;,  SYMLINK+=&quot;ydlidar&quot;&#x27; &gt;/etc/udev/rules.d/ydlidar-2303.rules
+    colcon build --symlink-install
+    source $WORKSPACE/install/setup.bash
+}
+
+function install_ldlidar_stl_ros2 {
+    cd $WORKSPACE
+    git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
+    colcon build
+    source $WORKSPACE/install/setup.bash
+    cd /tmp
+    wget https://raw.githubusercontent.com/linorobot/ldlidar/ros2/ldlidar.rules
+    sudo cp ldlidar.rules /etc/udev/rules.d
+}
+
+function install_ld06 {
+    install_ldlidar_stl_ros2
+}
+
+function install_ld19 {
+    install_ldlidar_stl_ros2
+}
+
+function install_stl27l {
+    install_ldlidar_stl_ros2
+}
+
+function install_sllidar_ros2 {
+    cd $WORKSPACE
+    git clone https://github.com/Slamtec/sllidar_ros2.git
+    colcon build
+    source $WORKSPACE/install/setup.bash
+    sudo cp sllidar_ros2/scripts/rplidar.rules /etc/udev/rules.d
+}
+
+function install_a1 {
+    install_sllidar_ros2
+}
+
+function install_a2 {
+    install_sllidar_ros2
+}
+
+function install_a3 {
+    install_sllidar_ros2
+}
+
+function install_c1 {
+    install_sllidar_ros2
+}
+
+function install_s1 {
+    install_sllidar_ros2
+}
+
+function install_s2 {
+    install_sllidar_ros2
+}
+
+function install_s3 {
+    install_sllidar_ros2
+}
+
+function install_realsense {
+    sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+    cd /tmp
+    wget https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules
+    sudo cp 99-realsense-libusb.rules /etc/udev/rules.d
+}
+
+function install_astra {
+    cd $WORKSPACE
+    sudo apt install -y libuvc-dev libopenni2-dev
+    git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
+    sudo cp src/ros_astra_camera/56-orbbec-usb.rules /etc/udev/rules.d/
+    colcon build
+    source $WORKSPACE/install/setup.bash
+}
+
+function install_zed {
+    cd /tmp
+    if [[ -f /etc/nv_tegra_release ]]
+        then
+            #TODO ADD CUDA INSTALLATION HERE
+            wget https://download.stereolabs.com/zedsdk/3.5/jp45/jetsons -O zed_sdk
+    elif lspci | grep VGA | grep -o NVIDIA
+        then
+            wget https://download.stereolabs.com/zedsdk/3.5/cu111/ubuntu20 -O zed_sdk
+    else
+        echo &quot;Linux Machine not supported by Zed Camera&quot;
+        exit 1
+    fi
+    
+    chmod +x zed_sdk
+    ./zed_sdk -- silent
+    cd $WORKSPACE
+    
+    git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
+    git clone https://github.com/ros-perception/image_common -b $ROS_DISTRO src/image_common #https://github.com/stereolabs/zed-ros2-wrapper#image-transport-and-topic-subscriptions
+    rosdep install --from-paths src --ignore-src -r -y
+    colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
+    # colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --cmake-args=-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-11.4
+    source $WORKSPACE/install/setup.bash
+    source ~/.bashrc
+}
+
+function install_zedm {
+    install_zed
+}
+
+function install_zed2 {
+    install_zed
+}
+
+function install_zed2i {
+    install_zed
+}
+
+function install_oakd {
+    echo &#x27;SUBSYSTEM==&quot;usb&quot;, ATTRS{idVendor}==&quot;03e7&quot;, MODE=&quot;0666&quot;&#x27; | sudo tee /etc/udev/rules.d/80-movidius.rules
+    sudo udevadm control --reload-rules &amp;&amp; sudo udevadm trigger
+    sudo apt install ros-$ROS_DISTRO-depthai-ros
+}
+
+function install_oakdlite {
+    install_oakd
+}
+
+function install_oakdpro {
+    install_oakd
+}
+
+if [[ &quot;$ROSDISTRO&quot; == &quot;&quot; || &quot;$ROSDISTRO&quot; == &quot;&lt;unknown&gt;&quot; ]]
+    then
+        echo &quot;No ROS2 distro detected&quot;
+        echo &quot;Try running $ source /opt/ros/&lt;ros_distro&gt;/setup.bash and try again.&quot;
+        exit 1
+fi
+
+if [ &quot;$*&quot; == &quot;&quot; ]
+    then
+        echo &quot;No arguments provided&quot;
+        echo
+        echo &quot;Example: $ bash install_linorobot2.bash 2wd a1&quot;
+        echo &quot;Example: $ bash install_linorobot2.bash 2wd a1 realsense&quot;
+        echo &quot;Example: $ bash install_linorobot2.bash 2wd - realsense&quot;
+        echo &quot;Example: $ bash install_linorobot2.bash 2wd&quot;
+
+        echo
+        exit 1
+fi
+        
+if [[ &quot;$BASE&quot; != &quot;ci&quot; ]] &amp;&amp; !(printf &#x27;%s\n&#x27; &quot;${ROBOT_TYPE_ARRAY[@]}&quot; | grep -xq $BASE)
+    then
+        echo &quot;Invalid linorobot base: $1&quot;
+        echo
+        echo &quot;Valid Options:&quot;
+        for key in &quot;${!ROBOT_TYPE_ARRAY[@]}&quot;; do echo &quot;${ROBOT_TYPE_ARRAY[$key]}&quot;; done
+        echo
+        exit 1
+fi
+
+if [[ &quot;$BASE&quot; != &quot;ci&quot; &amp;&amp; &quot;$LASER_SENSOR&quot; != &quot;&quot; &amp;&amp; &quot;$LASER_SENSOR&quot; != &quot;-&quot; ]] &amp;&amp; !(printf &#x27;%s\n&#x27; &quot;${LASER_SENSOR_ARRAY[@]}&quot; | grep -xq $LASER_SENSOR)
+    then
+        echo &quot;Invalid linorobot2 laser sensor: $LASER_SENSOR&quot;
+        echo
+        echo &quot;Valid Options:&quot;
+        for key in &quot;${!LASER_SENSOR_ARRAY[@]}&quot;; do echo &quot;${LASER_SENSOR_ARRAY[$key]}&quot;; done
+        echo
+        exit 1
+fi
+
+if [[ &quot;$BASE&quot; != &quot;ci&quot; &amp;&amp; &quot;$DEPTH_SENSOR&quot; != &quot;&quot; ]] &amp;&amp; !(printf &#x27;%s\n&#x27; &quot;${DEPTH_SENSOR_ARRAY[@]}&quot; | grep -xq $DEPTH_SENSOR)
+    then
+        echo &quot;Invalid linorobot2 depth sensor: $DEPTH_SENSOR&quot;
+        echo
+        echo &quot;Valid Options:&quot;
+        for key in &quot;${!DEPTH_SENSOR_ARRAY[@]}&quot;; do echo &quot;${DEPTH_SENSOR_ARRAY[$key]}&quot;; done
+        echo
+        exit 1
+fi
+
+if [[ &quot;$BASE&quot; != &quot;ci&quot; ]]
+    then
+        echo
+        echo &quot;You are installing linorobot2 on your robot computer.&quot;
+        echo
+        echo &quot;===========SUMMARY============&quot;
+        echo &quot;ROBOT TYPE   : $BASE&quot;
+        echo &quot;LASER SENSOR : $LASER_SENSOR&quot;
+        echo &quot;DEPTH SENSOR : $DEPTH_SENSOR&quot;
+        echo
+        echo &quot;This installer will edit your ~/.bashrc.&quot;
+        echo &quot;Create a linorobot2_ws on your $HOME directory.&quot;
+        echo &quot;Install linorobot2 ROS2 dependencies.&quot;
+        echo &quot;Install udev rules on /etc/udev/rules.d folder.&quot;
+        echo -n &quot;Enter [y] to continue. &quot; 
+        read reply
+        if [[ &quot;$reply&quot; != &quot;y&quot; &amp;&amp; &quot;$reply&quot; != &quot;Y&quot; ]]
+            then
+                echo &quot;Exiting now.&quot;
+                exit 1
+        fi
+fi
+
+echo
+echo &quot;INSTALLING NOW....&quot;
+echo
+
+#### 1.1 Source your ROS2 distro and workspace
+cd $HOME
+mkdir -p $WORKSPACE/src
+source /opt/ros/$ROS_DISTRO/setup.bash
+cd $WORKSPACE
+colcon build
+source $WORKSPACE/install/setup.bash
+
+#### 1.2/1.3 Install LIDAR/Depth Sensor ROS2 drivers:
+if (printf &#x27;%s\n&#x27; &quot;${LASER_SENSOR_ARRAY[@]}&quot; | grep -xq $LASER_SENSOR)
+    then
+        install_$LASER_SENSOR
+fi
+
+if (printf &#x27;%s\n&#x27; &quot;${DEPTH_SENSOR_ARRAY[@]}&quot; | grep -xq $DEPTH_SENSOR)
+    then
+        install_$DEPTH_SENSOR
+fi
+
+if [[ &quot;$BASE&quot; == &quot;ci&quot; ]]
+    then
+        for key in &quot;${!LASER_SENSOR_ARRAY[@]}&quot;; do  install_${LASER_SENSOR_ARRAY[$key]}; done
+fi
+
+#### 1.4 Download and install micro-ROS:
+cd $WORKSPACE
+git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+sudo apt install -y python3-vcstool build-essential
+sudo apt update &amp;&amp; rosdep update
+rosdep install --from-path src --ignore-src -y
+colcon build
+source $WORKSPACE/install/setup.bash
+
+#### 1.5 Setup micro-ROS agent:
+ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh
+source $WORKSPACE/install/setup.bash
+
+#### 2.1 Download linorobot2:
+cd $WORKSPACE
+git clone -b $ROS_DISTRO https://github.com/linorobot/linorobot2 src/linorobot2
+
+#### 2.2 Ignore Gazebo Packages on robot computer (optional)
+cd $WORKSPACE/src/linorobot2/linorobot2_gazebo
+touch COLCON_IGNORE
+
+#### 2.3 Install linorobot2 package:
+cd $WORKSPACE
+rosdep update &amp;&amp; rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
+colcon build
+source $WORKSPACE/install/setup.bash
+
+## ENV Variables
+if [[ &quot;$BASE&quot; != &quot;ci&quot; ]]
+    then
+        ### 1. Robot Type
+        echo &quot;export LINOROBOT2_BASE=$BASE&quot; &gt;&gt; ~/.bashrc
+        ### 2. Sensors
+        if [[ &quot;$LASER_SENSOR&quot; != &quot;-&quot; ||  &quot;$LASER_SENSOR&quot; != &quot;&quot; ]]
+            then
+                echo &quot;export LINOROBOT2_LASER_SENSOR=$LASER_SENSOR&quot; &gt;&gt; ~/.bashrc
+        fi
+
+        if [[ &quot;$DEPTH_SENSOR&quot; != &quot;-&quot; ||  &quot;$DEPTH_SENSOR&quot; != &quot;&quot; ]]
+            then
+            echo &quot;export LINOROBOT2_DEPTH_SENSOR=$DEPTH_SENSOR&quot; &gt;&gt; ~/.bashrc
+        fi
+        echo
+        echo &quot;Do you want to add sourcing of linorobot2_ws on your ~/.bashrc?&quot;
+        echo -n &quot;Yes [y] or No [n]: &quot; 
+        read reply
+        if [[ &quot;$reply&quot; == &quot;y&quot; || &quot;$reply&quot; == &quot;Y&quot; ]]
+            then
+                echo &quot;source \$HOME/linorobot2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrc
+        else
+            echo
+            echo &quot;Remember to run $ source ~/linorobot2_ws/install/setup.bash every time you open a terminal.&quot;
+        fi
+fi
+
+echo
+echo &quot;INSTALLATION DONE.&quot;
+echo
+echo &quot;Restart your robot computer now.&quot;
+</code></pre>
+    </section>
+
+    <footer class="page">
+      LinoRobot2 Yapım Kılavuzu — linorobot2 / linorobot2_hardware (GitHub) temel alınarak hazırlanmıştır.
+    </footer>
+  </main>
+</div>
