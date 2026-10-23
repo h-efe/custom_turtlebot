@@ -5,16 +5,21 @@
 // projesinin ESP32-S3 config şablonu temel alınmış, aşağıdaki değerler bu
 // robota özel olarak fiziksel ölçüm ve kalibrasyonla belirlenmiştir:
 //
+//   Şasi             : "Waffle" tarzı 4 katlı gövde
 //   Motor            : 2x Pololu 25D, 99:1 dişli oranı, #3219 (48 CPR encoder)
 //   Sürücü           : 2x BTS7960 (IBT_2)
 //   MOTOR_MAX_RPM    : Pololu #3219 datasheet'inden (100 RPM, yüksüz @ 12V)
-//   COUNTS_PER_REV1/2: `calibration/` firmware'i ile `sample` komutuyla ölçüldü
-//                      (Motor1/SOL=2103, Motor2/SAĞ=2146)
-//   WHEEL_DIAMETER   : Kumpasla fiziksel ölçüm (66mm = 0.066m)
+//   COUNTS_PER_REV1/2: gerçek 1m/2m mezura testiyle geriye hesaplanarak
+//                      kalibre edildi (Motor1/SOL=2296, Motor2/SAĞ=2327) —
+//                      yöntem için bkz. index.html §08
+//   WHEEL_DIAMETER   : tur testiyle ölçülen etkin çap (64.6mm) — kumpasla
+//                      ölçülen fiziksel 66mm'den teker kayması nedeniyle
+//                      küçük bir fark var
+//   LR_WHEELS_DISTANCE: sol-sağ tekerlek merkezleri arası, fiziksel ölçüm
 //   Pin ataması      : Motor1(SOL)=GPIO12/13+encoder GPIO6/7,
 //                      Motor2(SAĞ)=GPIO10/11+encoder GPIO4/5
-//   WIFI_* / AGENT_IP/ SYSLOG_*: Bu projede kullanılmıyor — ESP32↔RPi4
-//                      bağlantısı USB seri (micro-ROS, 921600 baud) üzerinden
+//   WIFI_* / AGENT_IP/ SYSLOG_*: kullanılmıyor — ESP32↔RPi4 bağlantısı USB
+//                      seri (micro-ROS, 921600 baud) üzerinden
 //
 // Aşağıdaki lisans bildirimi, temel alınan orijinal linorobot2_hardware
 // şablonuna aittir (Apache 2.0 — değiştirilmeden korunmuştur).
@@ -85,17 +90,17 @@ ROBOT ORIENTATION
 */
 
 //define your robot' specs here
-#define MOTOR_MAX_RPM 100                   // motor's max RPM (Pololu #3207, 100 RPM no-load @ 12V)
+#define MOTOR_MAX_RPM 100                   // motor's max RPM (Pololu #3219, 100 RPM no-load @ 12V)
 #define MAX_RPM_RATIO 0.85                  // max RPM allowed for each MAX_RPM_ALLOWED = MOTOR_MAX_RPM * MAX_RPM_RATIO
 #define MOTOR_OPERATING_VOLTAGE 12          // motor's operating voltage (used to calculate max RPM)
 #define MOTOR_POWER_MAX_VOLTAGE 12          // max voltage of the motor's power source (used to calculate max RPM)
 #define MOTOR_POWER_MEASURED_VOLTAGE 12     // current voltage reading of the power connected to the motor (used for calibration)
-#define COUNTS_PER_REV1 2103                 // wheel1 encoder's no of ticks per rev (reverted 2026-07-23 — recalibrated value 2186 did not fix left-lag imbalance, reverted back)
-#define COUNTS_PER_REV2 2146                 // wheel2 encoder's no of ticks per rev (reverted 2026-07-23, same reason)
+#define COUNTS_PER_REV1 2296                 // SOL motor — 2m/4.5cm sapma testinden geriye hesaplandı, bkz. index.html §08
+#define COUNTS_PER_REV2 2327                 // SAĞ motor — aynı yöntem
 #define COUNTS_PER_REV3 450                 // wheel3 encoder's no of ticks per rev
 #define COUNTS_PER_REV4 450                 // wheel4 encoder's no of ticks per rev
-#define WHEEL_DIAMETER 0.066                // wheel's diameter in meters
-#define LR_WHEELS_DISTANCE 0.160            // distance between left and right wheels
+#define WHEEL_DIAMETER 0.0646               // wheel's diameter in meters — tur testiyle ölçülen etkin çap (kumpas: 0.066)
+#define LR_WHEELS_DISTANCE 0.30             // distance between left and right wheels — fiziksel ölçüm
 #define PWM_BITS 10                         // PWM Resolution of the microcontroller
 #define PWM_FREQUENCY 20000                 // PWM Frequency
 

@@ -1,0 +1,343 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Linorobot2 Kablo Şeması</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: tek sütun teknik föy; her şekil kendi kaydırılabilir çerçevesinde, altında tablo ve kontrol listesi */
+:root {
+  --bg: #f3f6f7; --panel: #ffffff; --fg: #1b2328; --muted: #5b6870; --line: #c9d1d6;
+  --accent: #0b6e79; --warn: #b3261e; --warn-bg: #fdecea;
+  --w-red: #d93025; --w-black: #202124; --w-yellow: #c99a00; --w-white: #9aa0a6;
+  --w-blue: #1a73e8; --w-green: #188038; --w-5v: #e8710a; --w-usb: #7b8790; --w-sig: #6f42c1;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171a; --panel: #1a2125; --fg: #e3e9ec; --muted: #93a1a9; --line: #2f3a40;
+  --accent: #5cc4cf; --warn: #ff8a80; --warn-bg: #3a1f1d;
+  --w-red: #ff6b5e; --w-black: #8d969c; --w-yellow: #f2c94c; --w-white: #eef1f3;
+  --w-blue: #6ea8fe; --w-green: #4cc272; --w-5v: #ffa45c; --w-usb: #8a979f; --w-sig: #b392f0;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12171a; --panel: #1a2125; --fg: #e3e9ec; --muted: #93a1a9; --line: #2f3a40;
+  --accent: #5cc4cf; --warn: #ff8a80; --warn-bg: #3a1f1d;
+  --w-red: #ff6b5e; --w-black: #8d969c; --w-yellow: #f2c94c; --w-white: #eef1f3;
+  --w-blue: #6ea8fe; --w-green: #4cc272; --w-5v: #ffa45c; --w-usb: #8a979f; --w-sig: #b392f0;
+  color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1040px; margin: 0 auto; padding-block: 32px 64px; display: grid; gap: 40px; }
+header { display: grid; gap: 6px; }
+h1 { font-size: 30px; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 20px; margin: 0; text-wrap: balance; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.lede { color: var(--muted); max-width: 68ch; margin: 0; }
+section { display: grid; gap: 14px; min-width: 0; }
+.fig { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+.fig svg { display: block; width: 100%; min-width: 760px; height: auto; color: var(--fg); }
+figcaption { padding: 10px 16px 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13.5px; min-width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 22px; height: 4px; border-radius: 2px; display: inline-block; }
+
+/* SVG sınıfları */
+.box { fill: var(--panel); stroke: var(--fg); stroke-width: 1.4; }
+.box-soft { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
+.box-warn { fill: var(--warn-bg); stroke: var(--warn); stroke-width: 2; }
+.t { fill: var(--fg); font-family: var(--sans); font-size: 13px; }
+.tb { fill: var(--fg); font-family: var(--sans); font-size: 14px; font-weight: 700; }
+.ts { fill: var(--muted); font-family: var(--sans); font-size: 11.5px; }
+.tw { fill: var(--warn); font-family: var(--sans); font-size: 11.5px; font-weight: 600; }
+.pin { fill: var(--fg); font-family: var(--mono); font-size: 11.5px; }
+.c { text-anchor: middle; } .e { text-anchor: end; }
+.w { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.red { stroke: var(--w-red); } .blk { stroke: var(--w-black); } .yel { stroke: var(--w-yellow); }
+.wht { stroke: var(--w-white); } .blu { stroke: var(--w-blue); } .grn { stroke: var(--w-green); }
+.v5 { stroke: var(--w-5v); } .usb { stroke: var(--w-usb); stroke-width: 2.4; } .sig { stroke: var(--w-sig); }
+.gnd { fill: none; stroke: var(--fg); stroke-width: 1.6; stroke-linecap: round; }
+.dot { stroke: none; }
+.dot-red { fill: var(--w-red); } .dot-5v { fill: var(--w-5v); } .dot-fg { fill: var(--fg); }
+.star { fill: none; stroke: var(--fg); stroke-width: 1.6; }
+.star-warn { fill: none; stroke: var(--warn); stroke-width: 2.4; stroke-dasharray: 6 4; }
+.hub { fill: var(--panel); stroke: var(--fg); stroke-width: 2; }
+
+/* Tablolar ve liste */
+.tbl-wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td code, .mono { font-family: var(--mono); font-size: 13px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; }
+.chip i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 1px solid var(--line); }
+.note { font-size: 13px; color: var(--muted); max-width: 75ch; margin: 0; }
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">ESP32-S3 · BTS7960 ×2 · Pololu 25D ×2 · RPi4</div>
+  <h1>Linorobot2 Kablo Şeması</h1>
+  <p class="lede">Robotun kayıtlı son kablolama durumu (Waffle şasi, 24.09.2026). Kaynak: <span class="mono">~/linorobot2_s3</span> proje notları ve <span class="mono">esp32s3_config.h</span> pin atamaları.</p>
+</header>
+
+
+<!-- ŞEKİL 1: GÜÇ -->
+<section>
+  <h2>1. Güç dağıtımı</h2>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--w-red)"></i>11.1 V ham (batarya)</span>
+    <span><i class="sw" style="background:var(--w-5v)"></i>5 V regüleli</span>
+    <span><i class="sw" style="background:var(--w-usb)"></i>USB kablosu</span>
+    <span>⏚ ortak GND (Şekil 3)</span>
+    <span>● kablo birleşim noktası</span>
+  </div>
+  <figure class="fig">
+    <svg viewBox="0 0 980 480" role="img" aria-label="LiPo batarya hem XL4015E1 girişine hem iki BTS7960'ın B+ ucuna gider. XL4015E1'in 5 V çıkışı RPi4'ün USB-C girişini ve BTS7960'ların VCC, R_EN, L_EN uçlarını besler. RPi4, LIDAR'ı ve ESP32-S3'ü birer USB ile besler.">
+      <!-- Batarya -->
+      <rect class="box" x="30" y="170" width="160" height="110" rx="4"/>
+      <text class="tb c" x="105" y="212">3S1P LiPo</text>
+      <text class="t c" x="105" y="234">11.1 V · ≥1800 mAh · ≥5C</text>
+      <text class="ts c" x="105" y="254">bkz. §03 risk notu</text>
+      <text class="tb e" x="183" y="205">+</text>
+      <text class="tb e" x="183" y="255">−</text>
+      <path class="gnd" d="M190 250 H210 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+
+      <!-- 11.1 V hattı -->
+      <path class="w red" d="M190 200 H330"/>
+      <path class="w red" d="M250 200 V20 H865 V40"/>
+      <path class="w red" d="M675 20 V40"/>
+      <circle class="dot dot-red" cx="250" cy="200" r="5"/>
+      <circle class="dot dot-red" cx="675" cy="20" r="4.5"/>
+      <text class="ts" x="262" y="38">11.1 V regülesiz · motor gücü</text>
+
+      <!-- XL4015E1 -->
+      <rect class="box" x="330" y="170" width="180" height="110" rx="4"/>
+      <text class="pin" x="338" y="204">IN+</text>
+      <text class="pin" x="338" y="254">IN−</text>
+      <text class="pin e" x="502" y="204">OUT+</text>
+      <text class="pin e" x="502" y="254">OUT−</text>
+      <text class="tb c" x="420" y="214">XL4015E1</text>
+      <text class="t c" x="420" y="234">buck · ~5 A</text>
+      <text class="ts c" x="420" y="272">çıkış 5.0–5.2 V aralığında</text>
+      <path class="gnd" d="M330 250 H300 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+      <path class="gnd" d="M510 250 H540 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+
+      <!-- 5 V hattı -->
+      <path class="w v5" d="M510 200 H700 V315 H760"/>
+      <path class="w v5" d="M580 200 V150 H865 V130"/>
+      <path class="w v5" d="M675 150 V130"/>
+      <circle class="dot dot-5v" cx="580" cy="200" r="5"/>
+      <circle class="dot dot-5v" cx="675" cy="150" r="4.5"/>
+      <text class="ts c" x="770" y="166">5 V → VCC · R_EN · L_EN</text>
+      <text class="ts e" x="690" y="336">USB-C kablo: yalnız kırmızı + siyah lehimli</text>
+      <text class="ts e" x="690" y="352">yeşil (D+) / beyaz (D−) boş</text>
+
+      <!-- BTS7960 güç uçları -->
+      <rect class="box" x="600" y="40" width="150" height="90" rx="4"/>
+      <text class="pin" x="683" y="56">B+</text>
+      <text class="tb c" x="675" y="80">BTS7960 · SOL</text>
+      <text class="ts c" x="675" y="97">Motor1</text>
+      <text class="pin" x="683" y="124">5V uçları</text>
+      <text class="pin e" x="744" y="62">B−</text>
+      <path class="gnd" d="M750 58 H770 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+
+      <rect class="box" x="790" y="40" width="150" height="90" rx="4"/>
+      <text class="pin" x="873" y="56">B+</text>
+      <text class="tb c" x="865" y="80">BTS7960 · SAĞ</text>
+      <text class="ts c" x="865" y="97">Motor2</text>
+      <text class="pin" x="873" y="124">5V uçları</text>
+      <text class="pin e" x="934" y="62">B−</text>
+      <path class="gnd" d="M940 58 H960 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+
+      <!-- RPi4 -->
+      <rect class="box" x="760" y="280" width="180" height="80" rx="4"/>
+      <text class="pin" x="768" y="311">USB-C</text>
+      <text class="tb c" x="866" y="312">Raspberry Pi 4</text>
+      <text class="ts c" x="866" y="332">Ubuntu 22.04 · Humble</text>
+      <path class="gnd" d="M760 345 H740 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+
+      <!-- USB çıkışları: her biri tek kablo, LDS-01'in eski "2×USB" tasarımından kalan ikinci hat kaldırıldı -->
+      <path class="w usb" d="M800 360 V390 H645 V410"/>
+      <path class="w usb" d="M880 360 V410"/>
+
+      <rect class="box-soft" x="560" y="410" width="170" height="56" rx="4"/>
+      <text class="tb c" x="645" y="434">LDS-01</text>
+      <text class="ts c" x="645" y="453">1× USB (CP2102): veri + güç</text>
+
+      <rect class="box-soft" x="800" y="410" width="160" height="56" rx="4"/>
+      <text class="tb c" x="880" y="434">ESP32-S3</text>
+      <text class="ts c" x="880" y="453">USB: güç + micro-ROS</text>
+    </svg>
+    <figcaption>Batarya iki yere ayrılır: ham 11.1 V doğrudan sürücülerin B+ ucuna, bir kol da XL4015E1'e gider. XL4015E1'in 5 V çıkışı RPi4'ü ve sürücülerin mantık uçlarını besler. LIDAR ile ESP32 gücünü RPi4'ün USB'sinden alır. Sürücülerin M+/M− çıkışları Şekil 2'de.</figcaption>
+  </figure>
+</section>
+
+<!-- ŞEKİL 2: SİNYAL -->
+<section>
+  <h2>2. ESP32-S3 sinyal ve motor kabloları</h2>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--w-red)"></i>Kırmızı M+</span>
+    <span><i class="sw" style="background:var(--w-black)"></i>Siyah M−</span>
+    <span><i class="sw" style="background:var(--w-yellow)"></i>Sarı Enc A</span>
+    <span><i class="sw" style="background:var(--w-white)"></i>Beyaz Enc B</span>
+    <span><i class="sw" style="background:var(--w-blue)"></i>Mavi Vcc 3.3 V</span>
+    <span><i class="sw" style="background:var(--w-green)"></i>Yeşil GND</span>
+    <span><i class="sw" style="background:var(--w-sig)"></i>PWM jumper</span>
+    <span><i class="sw" style="background:var(--w-5v)"></i>5 V</span>
+  </div>
+  <figure class="fig">
+    <svg viewBox="0 0 980 480" role="img" aria-label="ESP32-S3'ün GPIO12 ve 13 pinleri sol BTS7960'ın RPWM ve LPWM uçlarına, GPIO10 ve 11 pinleri sağ BTS7960'a gider. Sol enkoder A ve B uçları GPIO6 ve 7'ye, sağ enkoder uçları GPIO4 ve 5'e bağlanır. Enkoderler ESP32'nin 3V3 pininden beslenir.">
+      <!-- ESP32 -->
+      <rect class="box" x="400" y="40" width="180" height="400" rx="4"/>
+      <text class="tb c" x="490" y="205">ESP32-S3</text>
+      <text class="t c" x="490" y="225">DevKitC-1 · N8R2</text>
+      <text class="ts c" x="490" y="245">USB → RPi4</text>
+      <text class="pin" x="408" y="84">GPIO12</text>
+      <text class="pin" x="408" y="114">GPIO13</text>
+      <text class="pin" x="408" y="304">GPIO6</text>
+      <text class="pin" x="408" y="334">GPIO7</text>
+      <text class="pin" x="408" y="364">3V3</text>
+      <text class="pin" x="408" y="394">GND</text>
+      <text class="pin e" x="572" y="84">GPIO10</text>
+      <text class="pin e" x="572" y="114">GPIO11</text>
+      <text class="pin e" x="572" y="304">GPIO4</text>
+      <text class="pin e" x="572" y="334">GPIO5</text>
+      <text class="pin e" x="572" y="364">3V3</text>
+      <text class="pin e" x="572" y="394">GND</text>
+      <path class="gnd" d="M490 440 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+      <text class="tw" x="504" y="462">ESP GND → ortak GND</text>
+
+      <!-- BTS7960 SOL mantık -->
+      <text class="tb c" x="240" y="40">BTS7960 · SOL (Motor1)</text>
+      <rect class="box" x="170" y="50" width="140" height="110" rx="4"/>
+      <text class="pin" x="178" y="76">R_EN</text>
+      <text class="pin" x="178" y="96">L_EN</text>
+      <text class="pin" x="178" y="116">VCC</text>
+      <text class="pin" x="178" y="136">GND</text>
+      <text class="pin e" x="302" y="84">RPWM</text>
+      <text class="pin e" x="302" y="114">LPWM</text>
+      <text class="pin c" x="210" y="154">M+</text>
+      <text class="pin c" x="270" y="154">M−</text>
+      <path class="w v5" d="M170 72 H140 M170 92 H140 M170 112 H140 M140 72 V112 M140 92 H112"/>
+      <circle class="dot dot-5v" cx="140" cy="92" r="4"/>
+      <text class="ts e" x="106" y="90">5 V</text>
+      <text class="ts e" x="106" y="104">(XL4015)</text>
+      <path class="gnd" d="M170 132 H140 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+      <path class="w sig" d="M310 80 H400 M310 110 H400"/>
+
+      <!-- Motor SOL -->
+      <path class="w red" d="M210 160 V250"/>
+      <path class="w blk" d="M270 160 V250"/>
+      <rect class="box" x="150" y="250" width="180" height="180" rx="4"/>
+      <text class="ts c" x="210" y="268">Kırmızı</text>
+      <text class="ts c" x="270" y="268">Siyah</text>
+      <text class="pin e" x="322" y="304">Sarı · A</text>
+      <text class="pin e" x="322" y="334">Beyaz · B</text>
+      <text class="pin e" x="322" y="364">Mavi · Vcc</text>
+      <text class="pin e" x="322" y="394">Yeşil · GND</text>
+      <path class="w yel" d="M330 300 H400"/>
+      <path class="w wht" d="M330 330 H400"/>
+      <path class="w blu" d="M330 360 H400"/>
+      <path class="w grn" d="M330 390 H400"/>
+      <text class="tb c" x="240" y="452">Pololu 25D 99:1 · SOL</text>
+      <text class="ts c" x="240" y="470">Motor1 · 48 CPR Hall enkoder</text>
+
+      <!-- BTS7960 SAĞ mantık -->
+      <text class="tb c" x="740" y="40">BTS7960 · SAĞ (Motor2)</text>
+      <rect class="box" x="670" y="50" width="140" height="110" rx="4"/>
+      <text class="pin e" x="802" y="76">R_EN</text>
+      <text class="pin e" x="802" y="96">L_EN</text>
+      <text class="pin e" x="802" y="116">VCC</text>
+      <text class="pin e" x="802" y="136">GND</text>
+      <text class="pin" x="678" y="84">RPWM</text>
+      <text class="pin" x="678" y="114">LPWM</text>
+      <text class="pin c" x="710" y="154">M+</text>
+      <text class="pin c" x="770" y="154">M−</text>
+      <path class="w v5" d="M810 72 H840 M810 92 H840 M810 112 H840 M840 72 V112 M840 92 H868"/>
+      <circle class="dot dot-5v" cx="840" cy="92" r="4"/>
+      <text class="ts" x="874" y="90">5 V</text>
+      <text class="ts" x="874" y="104">(XL4015)</text>
+      <path class="gnd" d="M810 132 H840 v8 m-9 0 h18 m-14 4 h10 m-7 4 h4"/>
+      <path class="w sig" d="M580 80 H670 M580 110 H670"/>
+
+      <!-- Motor SAĞ -->
+      <path class="w red" d="M710 160 V250"/>
+      <path class="w blk" d="M770 160 V250"/>
+      <rect class="box" x="650" y="250" width="180" height="180" rx="4"/>
+      <text class="ts c" x="710" y="268">Kırmızı</text>
+      <text class="ts c" x="770" y="268">Siyah</text>
+      <text class="pin" x="658" y="304">A · Sarı</text>
+      <text class="pin" x="658" y="334">B · Beyaz</text>
+      <text class="pin" x="658" y="364">Vcc · Mavi</text>
+      <text class="pin" x="658" y="394">GND · Yeşil</text>
+      <path class="w yel" d="M650 300 H580"/>
+      <path class="w wht" d="M650 330 H580"/>
+      <path class="w blu" d="M650 360 H580"/>
+      <path class="w grn" d="M650 390 H580"/>
+      <text class="tb c" x="740" y="452">Pololu 25D 99:1 · SAĞ</text>
+      <text class="ts c" x="740" y="470">Motor2 · 48 CPR Hall enkoder</text>
+    </svg>
+    <figcaption>Pinler kartta aslında aynı sırada (J1 başlığı) dizilidir. Okunaklı olsun diye burada sola ve sağa ayrıldı. Robota önden bakıldığında Motor1 = SOL, Motor2 = SAĞ. R_IS ve L_IS uçları boş kalır. Enkoder Vcc (mavi) mutlaka <b>3.3 V</b> olmalı. 5 V verirseniz ESP32'nin GPIO'ları yanar. Açık kollektörlü enkoderler için firmware'de dahili pull-up açık (<span class="mono">encoder.h</span> yaması).</figcaption>
+  </figure>
+</section>
+
+<!-- ŞEKİL 3: ORTAK TOPRAK -->
+<section>
+  <h2>3. Ortak toprak (⏚ işaretlerinin hepsi)</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 980 300" role="img" aria-label="Sekiz toprak ucu tek bir ortak GND noktasında birleşir: LiPo eksi, XL4015 giriş ve çıkış eksi, iki BTS7960'ın B eksi ve GND uçları, ESP32-S3 GND, iki enkoderin yeşil kablosu ve RPi4 USB-C siyah kablosu. ESP32 GND en sık unutulan bağlantıdır.">
+      <path class="star" d="M130 64 L490 150 M370 64 L490 150 M610 64 L490 150 M850 64 L490 150"/>
+      <path class="star" d="M370 236 L490 150 M610 236 L490 150 M850 236 L490 150"/>
+      <path class="star-warn" d="M130 236 L490 150"/>
+      <circle class="hub" cx="490" cy="150" r="42"/>
+      <text class="tb c" x="490" y="146">ORTAK</text>
+      <text class="tb c" x="490" y="164">GND</text>
+
+      <rect class="box" x="30" y="20" width="200" height="44" rx="4"/>
+      <text class="t c" x="130" y="47">LiPo −</text>
+      <rect class="box" x="270" y="20" width="200" height="44" rx="4"/>
+      <text class="t c" x="370" y="47">XL4015 IN− / OUT−</text>
+      <rect class="box" x="510" y="20" width="200" height="44" rx="4"/>
+      <text class="t c" x="610" y="47">BTS SOL: B− + GND</text>
+      <rect class="box" x="750" y="20" width="200" height="44" rx="4"/>
+      <text class="t c" x="850" y="47">BTS SAĞ: B− + GND</text>
+
+      <rect class="box-warn" x="30" y="236" width="200" height="54" rx="4"/>
+      <text class="tb c" x="130" y="258">ESP32-S3 GND</text>
+      <text class="tw c" x="130" y="278">en sık unutulan bağlantı</text>
+      <rect class="box" x="270" y="236" width="200" height="44" rx="4"/>
+      <text class="t c" x="370" y="263">Enkoder SOL · yeşil</text>
+      <rect class="box" x="510" y="236" width="200" height="44" rx="4"/>
+      <text class="t c" x="610" y="263">Enkoder SAĞ · yeşil</text>
+      <rect class="box" x="750" y="236" width="200" height="44" rx="4"/>
+      <text class="t c" x="850" y="263">RPi4 · USB-C siyah</text>
+    </svg>
+    <figcaption>Bütün GND uçları tek noktada birleşmeli. ESP32 GND unutulursa kart yine açılır ve kısmen çalışır. Bu yüzden fark edilmesi zordur. Daha önce yaşanan belirti: <b>i</b> ve <b>l</b> çalışıyordu, <b>,</b> ve <b>j</b> çalışmıyordu (tıkırtı var, 0 A).</figcaption>
+  </figure>
+</section>
+
+<!-- TABLO -->
+<section>
+  <h2>Pin tablosu</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Sinyal</th><th>Motor1 · SOL</th><th>Motor2 · SAĞ</th><th>Kablo</th></tr></thead>
+      <tbody>
+        <tr><td>BTS7960 RPWM</td><td><code>GPIO12</code></td><td><code>GPIO10</code></td><td>jumper</td></tr>
+        <tr><td>BTS7960 LPWM</td><td><code>GPIO13</code></td><td><code>GPIO11</code></td><td>jumper</td></tr>
+        <tr><td>BTS7960 R_EN · L_EN · VCC</td><td colspan="2">XL4015 5 V çıkışı</td><td>—</td></tr>
+        <tr><td>BTS7960 B+ / B−</td><td colspan="2">LiPo 11.1 V / ortak GND</td><td>kalın kablo</td></tr>
+        <tr><td>BTS7960 M+ / M−</td><td colspan="2">motor M+ / M−</td><td><span class="chip"><i style="background:var(--w-red)"></i>kırmızı</span> / <span class="chip"><i style="background:var(--w-black)"></i>siyah</span></td></tr>
+        <tr><td>Enkoder A</td><td><code>GPIO6</code></td><td><code>GPIO4</code></td><td><span class="chip"><i style="background:var(--w-yellow)"></i>sarı</span></td></tr>
+        <tr><td>Enkoder B</td><td><code>GPIO7</code></td><td><code>GPIO5</code></td><td><span class="chip"><i style="background:var(--w-white)"></i>beyaz</span></td></tr>
+        <tr><td>Enkoder Vcc</td><td colspan="2">ESP32 <code>3V3</code> (5 V değil)</td><td><span class="chip"><i style="background:var(--w-blue)"></i>mavi</span></td></tr>
+        <tr><td>Enkoder GND</td><td colspan="2">ortak GND</td><td><span class="chip"><i style="background:var(--w-green)"></i>yeşil</span></td></tr>
+        <tr><td>I2C (ileride IMU)</td><td colspan="2"><code>GPIO8</code> SDA · <code>GPIO9</code> SCL (şu an boş)</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</main>
+
+</body></html>

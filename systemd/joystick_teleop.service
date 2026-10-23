@@ -1,0 +1,16 @@
+[Unit]
+Description=D-pad + sag cubuk teleop (dpad_teleop.py -> /cmd_vel)
+After=network.target joy_node.service linorobot2_bringup.service
+Wants=joy_node.service
+
+[Service]
+Type=simple
+User=pi4
+Group=pi4
+Environment=HOME=/home/pi4
+ExecStart=/bin/bash -lc 'source /opt/ros/humble/setup.bash && source /home/pi4/linorobot2_ws/install/setup.bash && exec python3 /home/pi4/joystick_ws/dpad_teleop.py'
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -513,6 +513,9 @@
       <li><a href="#kalibrasyon">Kalibrasyon</a></li>
       <li><a href="#dogrulama">İlk Çalıştırma</a></li>
       <li><a href="#dersler">Bilinen Sorunlar</a></li>
+      <li><a href="#joystick">Joystick Teleop</a></li>
+      <li><a href="#systemd">Otomatik Başlatma</a></li>
+      <li><a href="#slam-nav2">SLAM / Nav2</a></li>
       <li><a href="#ekler">Ekler: Tam Dosyalar</a></li>
     </ol>
     <div class="downloads">
@@ -520,6 +523,20 @@
       <a class="dl-link" href="./TurtleBot_Yapim_Kilavuzu.pdf" download>⤓ Kılavuz (PDF)</a>
       <a class="dl-link" href="./esp32s3_config.h" download>⤓ esp32s3_config.h</a>
       <a class="dl-link" href="./install_linorobot2.bash" download>⤓ install_linorobot2.bash</a>
+      <a class="dl-link" href="./urdf/2wd_properties.urdf.xacro" download>⤓ 2wd_properties.urdf.xacro</a>
+      <a class="dl-link" href="./config/ekf.yaml" download>⤓ ekf.yaml</a>
+      <a class="dl-link" href="./config/navigation.yaml" download>⤓ navigation.yaml</a>
+      <a class="dl-link" href="./kablo_semasi.html" download>⤓ kablo_semasi.html</a>
+      <a class="dl-link" href="./scripts/start_robot.sh" download>⤓ start_robot.sh</a>
+      <a class="dl-link" href="./scripts/dpad_teleop.py" download>⤓ dpad_teleop.py</a>
+      <a class="dl-link" href="./scripts/go_1m_test.py" download>⤓ go_1m_test.py</a>
+      <a class="dl-link" href="./scripts/joint_track.py" download>⤓ joint_track.py</a>
+      <a class="dl-link" href="./scripts/odom_track.py" download>⤓ odom_track.py</a>
+      <a class="dl-link" href="./scripts/baud_scan.py" download>⤓ baud_scan.py</a>
+      <a class="dl-link" href="./systemd/linorobot2_bringup.service" download>⤓ linorobot2_bringup.service</a>
+      <a class="dl-link" href="./systemd/joy_node.service" download>⤓ joy_node.service</a>
+      <a class="dl-link" href="./systemd/joystick_teleop.service" download>⤓ joystick_teleop.service</a>
+      <a class="dl-link" href="./systemd/install_agent_service.sh" download>⤓ install_agent_service.sh</a>
     </div>
     <button class="print-btn" onclick="window.print()" type="button">⤓ Sayfadan PDF üret</button>
   </nav>
@@ -536,7 +553,7 @@
         <div><span class="k">Taban</span><span class="v">2WD / Diferansiyel</span></div>
         <div><span class="k">MCU</span><span class="v">ESP32-S3-DevKitC-1</span></div>
         <div><span class="k">Bilgisayar</span><span class="v">Raspberry Pi 4</span></div>
-        <div><span class="k">LIDAR</span><span class="v">RPLIDAR A1M8 / S1</span></div>
+        <div><span class="k">LIDAR</span><span class="v">LDS-01 (hls_lfcd_lds_driver)</span></div>
         <div><span class="k">Batarya</span><span class="v">3S1P 11.1V LiPo</span></div>
         <div><span class="k">Yazılım</span><span class="v">ROS 2 Humble</span></div>
       </div>
@@ -605,7 +622,7 @@
         <table>
           <thead><tr><th>Bileşen</th><th>Model</th><th>Adet</th><th>Not</th></tr></thead>
           <tbody>
-            <tr><td>2D LIDAR</td><td class="num">RPLIDAR A1M8 <span class="muted">(veya S1)</span></td><td class="num">1</td><td class="muted">Adaptör kartlı (development kit) versiyon — tek USB kablosu yeterli</td></tr>
+            <tr><td>2D LIDAR</td><td class="num">LDS-01 <span class="muted">(ROBOTIS)</span></td><td class="num">1</td><td class="muted">CP2102 USB-UART adaptörlü — tek USB kablosu yeterli (veri+güç).</td></tr>
           </tbody>
         </table>
       </div>
@@ -651,8 +668,7 @@
           <tbody>
             <tr><td>Raspberry Pi 4</td><td class="num">5V (USB-C)</td><td class="num">0.21–0.65A <span class="muted">(ölçülen, boşta–tam yük)</span></td><td class="num">3A <span class="muted">(resmi giriş özelliği)</span></td></tr>
             <tr><td>ESP32-S3-DevKitC-1</td><td class="num">5V (RPi4 USB üzerinden)</td><td class="num">~0.25A</td><td class="num">—</td></tr>
-            <tr><td>RPLIDAR A1M8 (tarayıcı)</td><td class="num">5V</td><td class="num">300–350mA</td><td class="num">500–600mA (açılış)</td></tr>
-            <tr><td>RPLIDAR A1M8 (motor)</td><td class="num">5V <span class="muted">(adaptör kartı üzerinden dahili)</span></td><td class="num">~100mA</td><td class="num">—</td></tr>
+            <tr><td>LDS-01 <span class="muted">(ROBOTIS resmi e-manual)</span></td><td class="num">5V ±5%</td><td class="num">≤400mA</td><td class="num">~1A (rush)</td></tr>
             <tr><td>Pololu 25D motor (×2)</td><td class="num">11.1V (ham)</td><td class="num">~150–300mA / motor <span class="muted">(normal sürüş)</span></td><td class="num">~5.6A / motor <span class="muted">(kilitlenme/stall)</span></td></tr>
             <tr><td>BTS7960 sürücü (×2)</td><td class="num">5V lojik + 11.1V güç</td><td class="num">~50mA lojik / sürücü</td><td class="num">Modül reyting: ~43A/kanal <span class="muted">(kısa süreli, kullanılmıyor)</span></td></tr>
             <tr class="total"><td>Toplam (bataryaya yansıyan, en kötü durum)</td><td class="num">11.1V eşdeğer</td><td class="num" colspan="2">~12.6A <span class="muted">(iki motor aynı anda kilitlenirse)</span></td></tr>
@@ -807,8 +823,8 @@
 
           <!-- LIDAR -->
           <rect class="box box-fill" x="465" y="590" width="250" height="60" rx="8"/>
-          <text class="lbl-title" x="590" y="616" text-anchor="middle">RPLIDAR A1M8</text>
-          <text class="lbl-sub" x="590" y="634" text-anchor="middle">USB adaptör kartı (veri + güç)</text>
+          <text class="lbl-title" x="590" y="616" text-anchor="middle">LDS-01</text>
+          <text class="lbl-sub" x="590" y="634" text-anchor="middle">USB-UART (CP2102) · 230400 baud</text>
 
           <!-- RPi4 <-> LIDAR (data, dashed) -->
           <line x1="590" y1="540" x2="590" y2="590" stroke="var(--rail-data)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
@@ -847,6 +863,8 @@
         <span class="lbl">Pololu 6 telli demet renk kodu</span>
         Kırmızı=M+ · Siyah=M− · Sarı=Enc A · Beyaz=Enc B · Mavi=Enc Vcc(3.3V) · Yeşil=Enc GND
       </div>
+      <p class="sec-intro">Yukarıdaki şemanın güç/sinyal/ortak-toprak ayrımını üç ayrı figürde ve bir
+      güç-verilmeden-önce kontrol listesiyle genişleten referans: <code>kablo_semasi.html</code>.</p>
     </section>
 
     <!-- 5. MEKANİK MONTAJ -->
@@ -885,28 +903,117 @@
         <li><h4>linorobot2_hardware deposunu klonla</h4><pre><code>git clone -b humble https://github.com/linorobot/linorobot2_hardware.git
 cd linorobot2_hardware/firmware</code></pre></li>
         <li><h4>Doğru config'i doğrula</h4><p><code>config.h</code> içinde <code>USE_ESP32S3_CONFIG</code> tanımlı olmalı; motor/pin/kalibrasyon değerleri <code>config/custom/esp32s3_config.h</code> içindedir (§04'teki pin haritasıyla aynı).</p></li>
+        <li><h4>İki zorunlu kod yaması (upstream'den fark)</h4><p>Bu robotta, resmi depodan sadece <strong>iki dosyada, iki satır</strong> değiştirildi — bunlar olmadan motorlar hiç dönmez / encoder hiç veri üretmez. Aşağıdaki iki değişikliği uygulayın.</p></li>
         <li><h4>Derle ve yükle</h4><pre><code>pio run -e esp32s3 -t upload --upload-port /dev/ttyACM0</code></pre><p>Native USB portunda otomatik reset devresi olmadığından, yükleme sırasında <strong>BOOT</strong> tuşuna basılı tutup <strong>RESET</strong>'e dokunmak gerekebilir.</p></li>
         <li><h4>Doğru portu ayırt et</h4><p>Kartın iki USB-C portu vardır: <code>idVendor=303a</code> (native USB — Serial/micro-ROS için kullanılan budur) ve <code>idVendor=1a86</code> (UART köprü — sadece flaşlama). Karıştırmayın.</p></li>
       </ol>
+
+      <h3>Yama 1 — <code>firmware/lib/encoder/encoder.h</code> (satır 52)</h3>
+      <p>Açık-kolektör (open-collector) encoder'lar için <code>ESP32Encoder</code> kütüphanesinin varsayılan
+      pull-DOWN ayarı hiç veri üretmez; pull-UP'a zorlanmalı. <code>attachHalfQuad()</code> çağrısından
+      <strong>hemen önce</strong>, <code>Encoder</code> yapıcısının (constructor) içine eklenir:</p>
+      <pre class="file-block"><code>Encoder(int pin1, int pin2, int counts_per_rev, bool invert = false) {
+    int temp_pin = pin1;
+    if (pin1 &lt; 0 || pin2 &lt; 0) return; // unused encoder
+    if(invert)
+    {
+        pin1 = pin2;
+        pin2 = temp_pin;
+    }
+    counts_per_rev_ = counts_per_rev;
+    ESP32Encoder::useInternalWeakPullResistors = puType::up;  // &lt;-- EKLENEN SATIR
+    encoder_.attachHalfQuad(pin1, pin2);
+}</code></pre>
+
+      <h3>Yama 2 — <code>firmware/src/firmware.ino</code> (satır ~295)</h3>
+      <p>ROS2 Humble'ın <code>rclc</code> kütüphanesinde <code>rclc_timer_init_default2</code> (5 argümanlı)
+      yoktur, sadece 4 argümanlı <code>rclc_timer_init_default</code> vardır. Upstream kod bazı dallarda
+      5 argümanlı ismi kullanıyor olabilir — Humble'da derleme hatası verir, aşağıdaki gibi olmalıdır:</p>
+      <pre class="file-block"><code>// create timer for actuating the motors at 50 Hz (1000/20)
+const unsigned int control_timeout = 20;
+RCCHECK(rclc_timer_init_default(   // &lt;-- "rclc_timer_init_default2" DEĞİL
+    &amp;control_timer,
+    &amp;support,
+    RCL_MS_TO_NS(control_timeout),
+    controlCallback
+));</code></pre>
     </section>
 
     <!-- 7. RPI4 KURULUMU -->
     <section class="doc" id="rpi4-kurulum">
-      <div class="sec-head"><span class="sec-num">§07</span><h2>Raspberry Pi 4 Kurulumu</h2></div>
+      <div class="sec-head"><span class="sec-num">§07</span><h2>Raspberry Pi 4 Kurulumu — Komut Günlüğü</h2></div>
+      <p class="sec-intro">Bu bölüm, RPi4 üzerinde fiilen çalıştırılan <strong>tüm komutları</strong>, sırasıyla,
+      hiçbir adım atlanmadan belgeler. Amaç: aynı kartı sıfırdan, bu kılavuzu takip ederek, hiçbir komutu
+      tahmin etmeden yeniden kurabilmek.</p>
 
+      <h3>Faz 1 — İşletim sistemi</h3>
       <ol class="steps">
-        <li><h4>İşletim sistemi</h4><p>Raspberry Pi Imager ile <strong>Ubuntu Server 22.04.5 LTS (64-bit)</strong> — Desktop değil, 32-bit değil. Gelişmiş ayarlardan SSH + kullanıcı + WiFi önceden yapılandırılabilir.</p></li>
-        <li><h4>ROS 2 Humble</h4><pre><code>sudo apt install ros-humble-ros-base
-echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc</code></pre></li>
-        <li><h4>micro-ROS agent</h4><pre><code>mkdir -p ~/microros_ws/src && cd ~/microros_ws/src
-git clone -b humble https://github.com/micro-ROS/micro_ros_setup.git
-cd ~/microros_ws && colcon build
-source install/local_setup.bash
+        <li><h4>Raspberry Pi Imager ile yazma</h4><p>Seçilen imaj: <strong>Ubuntu Server 22.04.5 LTS (64-bit)</strong> — Desktop değil (gereksiz RAM/CPU), 32-bit değil (ROS2 Humble'ın resmi <code>packages.ros.org</code> deposu sadece arm64 sağlıyor).</p>
+        <p>Imager'ın gelişmiş ayarları (⚙️) ile SD karta yazmadan önce yapılandırılanlar: Hostname <code>raspberrypi4</code>, SSH etkin (şifre ile), kullanıcı <code>pi4</code>, WiFi SSID/şifre, saat dilimi <code>Europe/Istanbul</code>, klavye düzeni <code>tr</code>.</p></li>
+        <li><h4>İlk SSH bağlantısı</h4><pre><code>ssh pi4@&lt;rpi-ip&gt;</code></pre><p>IP, DHCP ile atanır; her açılışta değişebilir (router'ın DHCP istemci listesinden ya da <code>ping</code> ile ARP taramasından bulunabilir — bkz. §10).</p>
+        <pre><code>uname -m   # aarch64 çıkmalı — 64-bit doğrulaması</code></pre></li>
+        <li><h4>Sistem güncelleme</h4><pre><code>sudo apt update && sudo apt upgrade -y</code></pre>
+        <p><strong>Karşılaşılan sorun:</strong> <code>Hash Sum mismatch</code> hatası (birkaç farklı pakette, rastgele). Geçici çözüm: komutu tekrar çalıştırmak (genelde 2. denemede geçiyor). Kalıcı kök neden ve çözüm için bkz. §10 — bu, kurumsal ağın şeffaf HTTP proxy'sinden kaynaklanıyordu.</p>
+        <p>Kernel güncellenirse (<code>5.15.0-1061</code> → <code>5.15.0-1105-raspi</code> gibi) yeniden başlatın: <code>sudo reboot</code></p></li>
+        <li><h4>Locale (dil/karakter kodlaması)</h4><pre><code>locale
+sudo apt install locales -y
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8</code></pre><p>ROS2'nin DDS katmanı ve <code>colcon</code>/<code>rosdep</code> UTF-8'e güveniyor; minimal Ubuntu Server kurulumunda locale bazen <code>C</code>/<code>POSIX</code> kalıyor.</p></li>
+      </ol>
+
+      <h3>Faz 2 — ROS 2 Humble</h3>
+      <ol class="steps">
+        <li><h4>Resmi ROS2 apt deposu</h4><pre><code>sudo apt install software-properties-common -y
+sudo add-apt-repository universe
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+sudo apt update</code></pre></li>
+        <li><h4>Paket kurulumu (ros-base, desktop değil)</h4><pre><code>sudo apt install ros-humble-ros-base -y
+sudo apt install python3-colcon-common-extensions python3-rosdep python3-argcomplete -y
+sudo rosdep init
+rosdep update
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc</code></pre><p><strong>Neden <code>ros-base</code>, <code>desktop</code> değil:</strong> RPi'ye ekran bağlanmıyor (başlangıçta) — RViz/Gazebo gibi GUI araçlarına ihtiyaç yok, gereksiz paket/RAM kullanımından kaçınılıyor. (Not: proje ilerledikçe RPi4'e fiziksel ekran da bağlandı ve GNOME masaüstü sonradan kuruldu — bkz. §10, bu normalde RPi3B+'ta önerilmeyen bir şeydi ama RPi4'ün 4GB RAM'i bunu kaldırabildi.)</p></li>
+      </ol>
+
+      <h3>Faz 3 — micro-ROS agent workspace</h3>
+      <ol class="steps">
+        <li><h4>Agent kaynak kodu ve derleme</h4><pre><code>sudo apt install git -y
+mkdir -p ~/microros_ws/src
+cd ~/microros_ws
+git clone -b humble https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+rosdep install --from-paths src --ignore-src -y
+colcon build --symlink-install
+source install/local_setup.bash</code></pre><p>Bu adım sadece <code>micro_ros_setup</code> betik paketini derler (birkaç saniye). Asıl agent henüz yok.</p></li>
+        <li><h4>Agent'ın kendisini oluştur ve derle</h4><pre><code>sudo apt install python3-vcstool -y
 ros2 run micro_ros_setup create_agent_ws.sh
-ros2 run micro_ros_setup build_agent.sh</code></pre><p>Düşük RAM'li kartlarda (1-2GB) derleme sırasında geçici bir swap dosyası gerekebilir — <code>/etc/fstab</code>'a eklenmezse her reboot'ta kaybolur.</p></li>
-        <li><h4>Tam linorobot2 kurulumu (Nav2/SLAM/URDF)</h4><pre><code>wget https://raw.githubusercontent.com/linorobot/linorobot2/humble/install_linorobot2.bash
-bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modelidir — desteklenenler arasında <code>a1</code>, <code>s1</code>, <code>s2</code>, <code>s3</code> ve diğerleri vardır (<code>sllidar_ros2</code> paketi üzerinden).</p></li>
-        <li><h4>Bringup</h4><pre><code>ros2 launch linorobot2_bringup bringup.launch.py micro_ros_baudrate:=921600</code></pre><p><code>micro_ros_baudrate</code> mutlaka <code>esp32s3_config.h</code>'deki <code>BAUDRATE</code> (921600) ile eşleşmelidir — varsayılan (115200) farklıdır.</p></li>
+ros2 run micro_ros_setup build_agent.sh</code></pre><p>RPi4'te (4GB RAM) ~4-5 dakika sürer. Düşük RAM'li kartlarda (RPi3B+ gibi, 1GB) swap dosyası gerekebilir — <code>/etc/fstab</code>'a eklenmezse her reboot'ta kaybolur.</p></li>
+        <li><h4>Test (ESP32 bağlıyken)</h4><pre><code>ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 -b 921600</code></pre><p>Başka bir terminalde <code>ros2 topic list</code> ile <code>/cmd_vel</code>, <code>/odom/unfiltered</code>, <code>/imu/data</code> görülmeli.</p></li>
+      </ol>
+
+      <h3>Faz 4 — Tam linorobot2 kurulumu (Nav2/SLAM/URDF)</h3>
+      <ol class="steps">
+        <li><h4>Resmi kurulum betiği</h4><pre><code>source /opt/ros/humble/setup.bash
+cd /tmp
+wget https://raw.githubusercontent.com/linorobot/linorobot2/humble/install_linorobot2.bash
+bash install_linorobot2.bash 2wd -</code></pre>
+        <p>Argümanlar: <code>2wd</code> = robot taban tipi, ikinci argüman LIDAR modeli
+        (<code>ydlidar</code>, <code>xv11</code>, <code>ld06</code>, <code>ld19</code>, <code>stl27l</code>,
+        <code>a1</code>/<code>a2</code>/<code>a3</code>/<code>c1</code>/<code>s1</code>/<code>s2</code>/<code>s3</code>
+        — LDS-01 bu listede yok). <code>-</code> = "lazer sensör yok", betiğin kendi LIDAR kurulumunu atlar;
+        LDS-01 bir sonraki adımda ayrıca eklenir.</p>
+        <p>Betik <code>~/linorobot2_ws</code>'u oluşturur: URDF (<code>linorobot2_description</code>), Nav2 config (<code>linorobot2_navigation</code>), SLAM Toolbox config, ikinci bir bağımsız micro-ROS agent kopyası. <code>LINOROBOT2_BASE=2wd</code> ortam değişkeni <code>~/.bashrc</code>'ye eklenir.</p></li>
+        <li><h4>LDS-01 sürücüsünü elle ekle</h4><pre><code>cd ~/linorobot2_ws/src
+git clone -b humble https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
+cd ~/linorobot2_ws
+colcon build --packages-select hls_lfcd_lds_driver
+source install/setup.bash</code></pre>
+        <p>Çalıştırma: <code>ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py</code> (bkz. <a href="./scripts/start_robot.sh">scripts/start_robot.sh</a>). <code>linorobot2_bringup.service</code>'in <code>ExecStart</code>'ı
+        (<a href="./systemd/install_agent_service.sh">systemd/install_agent_service.sh</a>) <code>LINOROBOT2_LASER_SENSOR</code>'ü
+        unset eder, böylece bringup hiçbir LIDAR'ı otomatik başlatmaya çalışmaz — LIDAR her zaman
+        <code>start_robot.sh</code> ile ayrıca başlatılır.</p></li>
+        <li><h4>Elle bringup (systemd kurulmadan önce, ilk test için)</h4><pre><code>ros2 launch linorobot2_bringup bringup.launch.py micro_ros_baudrate:=921600</code></pre><p><code>micro_ros_baudrate</code> mutlaka <code>esp32s3_config.h</code>'deki <code>BAUDRATE</code> (921600) ile eşleşmelidir — varsayılan (115200) farklıdır ve agent ESP32 ile hiç konuşamaz.</p></li>
       </ol>
     </section>
 
@@ -920,9 +1027,9 @@ bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modeli
           <thead><tr><th>Parametre</th><th>Nasıl ölçülür</th><th>Bu projede ölçülen değer</th></tr></thead>
           <tbody>
             <tr><td><code>MOTOR_MAX_RPM</code></td><td class="muted">Üreticinin datasheet'i</td><td class="num">100 RPM (yüksüz, 12V)</td></tr>
-            <tr><td><code>COUNTS_PER_REV</code></td><td class="muted">Seri monitörden <code>sample</code> komutu, motor başına</td><td class="num">M1=2103 · M2=2146</td></tr>
-            <tr><td><code>WHEEL_DIAMETER</code></td><td class="muted">Kumpas/cetvel ile — <strong>çap</strong>, yarıçap değil</td><td class="num">0.066 m</td></tr>
-            <tr><td><code>LR_WHEELS_DISTANCE</code></td><td class="muted">Sol-sağ tekerlek merkezleri arası</td><td class="num">0.160 m</td></tr>
+            <tr><td><code>COUNTS_PER_REV</code></td><td class="muted">1m/2m mezura testiyle geriye hesaplanan düzeltme (bkz. altındaki not)</td><td class="num">M1(SOL)=2296 · M2(SAĞ)=2327</td></tr>
+            <tr><td><code>WHEEL_DIAMETER</code></td><td class="muted">Tur testi: tekerleğe işaret koyup 5 tam tur sürdürüp zeminde kat edilen mesafeyi ölçmek — <code>d_eff = mesafe/(tur×π)</code></td><td class="num">0.0646 m <span class="muted">(fiziksel kumpas: 0.066 m)</span></td></tr>
+            <tr><td><code>LR_WHEELS_DISTANCE</code></td><td class="muted">Sol-sağ tekerlek merkezleri arası — Waffle şasiye geçişte yeniden ölçüldü</td><td class="num">0.30 m <span class="muted">(Burger şasi: 0.160 m)</span></td></tr>
             <tr><td><code>K_P / K_I / K_D</code></td><td class="muted">Stok değerlerle başla, sadece gerekirse ayarla</td><td class="num">0.6 / 0.8 / 0.5</td></tr>
           </tbody>
         </table>
@@ -934,6 +1041,78 @@ bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modeli
         (LEDC) geçerli bir sinyal üretemez ve motor <strong>hiç dönmez</strong>. Çözüm: <code>spin()</code>'i
         döngünün <em>dışına, öncesine</em> taşımak — döngü sadece zamanlamayı kontrol etmeli, PWM komutunu
         tekrar tekrar göndermemelidir.
+      </div>
+
+      <h3>Düzeltilmiş <code>sampleMotors()</code> — <code>calibration/src/firmware.ino</code></h3>
+      <p>Bu robotta fiilen kullanılan, düzeltilmiş hâli (<code>spin()</code> döngünün dışında, bir kere):</p>
+      <pre class="file-block"><code>void sampleMotors(bool show_summary)
+{
+    if(Kinematics::LINO_BASE == Kinematics::DIFFERENTIAL_DRIVE)
+    {
+        total_motors = 2;
+    }
+
+    float measured_voltage = constrain(MOTOR_POWER_MEASURED_VOLTAGE, 0, MOTOR_OPERATING_VOLTAGE);
+    float scaled_max_rpm = ((measured_voltage / MOTOR_OPERATING_VOLTAGE) * MOTOR_MAX_RPM);
+    float total_rev = scaled_max_rpm * (SAMPLE_TIME / 60.0);
+
+    for(int i=0; i&lt;total_motors; i++)
+    {
+        Serial.print("SPINNING ");
+        Serial.print(labels[i]);
+
+        unsigned long start_time = micros();
+        unsigned long last_status = micros();
+
+        encoders[i]-&gt;write(0);
+        motors[i]-&gt;spin(PWM_MAX);          // &lt;-- DÖNGÜ DIŞINDA, TEK SEFER
+        while(true)
+        {
+            if(micros() - start_time &gt;= SAMPLE_TIME * 1000000)
+            {
+                motors[i]-&gt;spin(0);
+                Serial.println("");
+                break;
+            }
+
+            if(micros() - last_status &gt;= 1000000)
+            {
+                last_status = micros();
+                Serial.print(".");
+            }
+        }
+
+        counts_per_rev[i] = encoders[i]-&gt;read() / total_rev;
+    }
+    if(show_summary)
+        printSummary();
+}</code></pre>
+      <div class="callout warn">
+        <span class="lbl">Bu komutun sayılarına körü körüne güvenmeyin</span>
+        <code>sample</code>'ın ürettiği <code>COUNTS_PER_REV</code>, <code>MOTOR_MAX_RPM</code>'in gerçek
+        devirle birebir uyuştuğu varsayımına dayanır — bu projede bu varsayım güvenilmez çıktı
+        (bkz. aşağıdaki bölüm). Kullanım komutu: seri port 9600 baud'da <code>sample</code> yazıp Enter'a
+        basmak, iki motor için ~10'ar saniye sürer.
+      </div>
+
+      <h3>COUNTS_PER_REV — mezura ile geriye hesaplama yöntemi</h3>
+      <p>Kalibrasyon firmware'inin <code>sample</code> komutu <code>MOTOR_MAX_RPM</code>'in doğru olduğu
+      varsayımına dayanır (gerçek devri değil, teorik devri kullanır) — bu projede bu varsayım güvenilmez
+      çıktı, iki ayrı denemede birbirinden çok farklı/tutarsız sonuçlar verdi. Onun yerine <strong>odometri
+      ile gerçek mezura ölçümünü karşılaştırıp geriye doğru ölçek hesaplandı</strong>:</p>
+      <ol class="steps">
+        <li><h4>1 metre ve 2 metre düz sürüş testi</h4><p>Robot sabit hızda (<code>/odom/unfiltered</code> Euclid mesafesi 1.000m / 2.000m'ye ulaşınca duracak şekilde) sürülür, gerçek kat edilen mesafe mezurayla ölçülür.</p></li>
+        <li><h4>Ölçek oranı</h4><p><code>oran = odometri_mesafesi / gerçek_mesafe</code> — bu projede 1.001/0.92 ≈ <strong>1.088</strong> (odometri %8.8 fazla okuyordu).</p></li>
+        <li><h4>Her iki COUNTS_PER_REV'i aynı oranda büyüt</h4><p>Eski ortalama değer × 1.088 — bu <em>genel ölçek</em> hatasını düzeltir (ileri/geri mesafe artık mezura ile birebir tutuyor), ama sol-sağ dengesizliğini (yön sapmasını) düzeltmez.</p></li>
+        <li><h4>Yön sapmasını ayrı hesapla</h4><p>2m düz giderken ölçülen yanal sapmadan (bu projede 4.5cm sola) dönüş yarıçapı <code>R = mesafe² / (2 × sapma)</code> ve gereken teker hız farkı <code>L/R</code> (L = teker arası mesafe) hesaplanır; bu oran, ortalama ölçeği koruyarak iki <code>COUNTS_PER_REV</code> arasında yeniden dağıtılır.</p></li>
+      </ol>
+      <div class="callout warn">
+        <span class="lbl">Tuzak — <code>sample</code> komutunun oranına güvenmeyin</span>
+        İlk denemede sol-sağ dengesizliği <code>sample</code> komutunun ham oranıyla (2287/2233) düzeltilmeye
+        çalışıldı — sonuç <strong>yanlış yönde ve aşırı büyük</strong> bir düzeltme oldu, sapmayı düzeltmek
+        yerine kötüleştirdi. Gerçek mezura ölçümünden geriye hesaplanan oran (yukarıdaki yöntem) doğru
+        sonucu verdi. <code>sample</code>'ın mutlak sayıları <code>MOTOR_MAX_RPM</code> varsayımına bağlı
+        olduğu için güvenilmez; sadece gerçek dünya ölçümünü referans alın.
       </div>
     </section>
 
@@ -948,7 +1127,7 @@ bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modeli
         <li><span class="box"></span>Motor sürücüsünü güçlendirmeden ESP32↔RPi4 micro-ROS testine <strong>başlama</strong> — güçsüz sürücü, seri hatta elektriksel gürültü bindirip agent'ın çökmesine yol açabilir</li>
         <li><span class="box"></span><code>ros2 topic echo /odom/unfiltered</code> ile canlı encoder verisini doğrula</li>
         <li><span class="box"></span>Teleop ile dört yönü de (ileri/geri/sol/sağ) tek tek test et, motor kimliğinin (SOL=Motor1/SAĞ=Motor2) doğru olduğunu gözle onayla</li>
-        <li><span class="box"></span>LIDAR'ı tek başına başlatıp (<code>ros2 launch sllidar_ros2 sllidar_a1_launch.py</code>) "health status: OK" logunu gör</li>
+        <li><span class="box"></span>LIDAR'ı tek başına başlatıp (<code>ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py</code>) <code>ros2 topic hz /scan</code> ile ~5Hz veri aktığını gör</li>
         <li><span class="box"></span>Tam <code>bringup.launch.py</code> + <code>slam.launch.py</code> ile RViz'de canlı harita oluşumunu izle</li>
       </ul>
     </section>
@@ -967,13 +1146,119 @@ bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modeli
         <div class="gotcha"><span class="tag">Performans</span><h4>RPi4 + RViz üzerinden WiFi</h4><p>RViz'i WiFi üzerinden sürekli açık bırakmak, ROS2/DDS'in geri basınç (back-pressure) yaşamasına ve <code>micro_ros_agent</code>'ın senkron kaybetmesine yol açabilir. Sadece kontrol için aç, sonra kapat.</p></div>
         <div class="gotcha"><span class="tag">Mekanik</span><h4>Şaft-adaptör toleransı</h4><p>Bkz. §05 — zorlanarak takılan plastik adaptör tekerlek sallanmasının en sık nedenidir.</p></div>
         <div class="gotcha"><span class="tag">Güç</span><h4>Sürücü güçsüzken test etmeyin</h4><p>Sadece ESP32+RPi4 test edilirken BTS7960 güçsüz bırakılırsa, PWM hattı seri iletişime gürültü bindirip <code>NotEnoughMemoryException</code> ile agent'ı çökertebilir.</p></div>
+        <div class="gotcha"><span class="tag">WiFi</span><h4>brcmfmac sürücüsü motor yükünde düşüyor</h4><p>Motor aktivitesinden hemen sonra RPi4'ün WiFi'si tamamen kayboluyor ("No wifi adaptor found"). <code>lsmod | grep brcm</code> boş çıkar. Çözüm: <code>sudo modprobe brcmfmac</code> — reboot gerekmez.</p></div>
+        <div class="gotcha"><span class="tag">SLAM/Nav2</span><h4>LIDAR/SLAM durunca köprü (EKF) kopuyor</h4><p>LIDAR ya da SLAM'i Ctrl+C ile durdurunca <code>/odom</code> (EKF çıktısı) ve TF'teki <code>odom</code> çerçevesi kayboluyor — USB kopması yok, EKF düğümü sessizce takılı kalıyor. <code>/odom/unfiltered</code> (ham ESP32 verisi) etkilenmiyor, bu yüzden fark edilmesi zor. Çözüm: <code>sudo systemctl restart linorobot2_bringup.service</code>. <code>start_robot.sh</code>'nin <code>cleanup()</code> fonksiyonu bunu otomatik yapar (bkz. §14).</p></div>
+        <div class="gotcha"><span class="tag">RViz/QoS</span><h4>LIDAR Best Effort, RViz varsayılanı Reliable</h4><p>RViz'de <code>/scan</code> hiç görünmez, log'da <code>incompatible QoS</code> uyarısı çıkar. LIDAR sürücüsü Best Effort yayınlıyor, RViz display'in varsayılanı Reliable. Çözüm: RViz config dosyasında (<code>.rviz</code>) LaserScan display'in <code>Reliability Policy</code>'sini <code>Best Effort</code> yapın.</p></div>
+        <div class="gotcha"><span class="tag">Geliştirme ortamı</span><h4>VSCode snap sandbox, GUI uygulamalarını bozuyor</h4><p>VSCode kendisi snap paketiyse, içindeki terminalden (ya da ona bağlı bir araçtan) <code>rviz2</code> gibi GUI uygulamaları <code>libpthread.so.0 ... undefined symbol</code> hatasıyla çöker. Çözüm: GUI araçlarını VSCode'un dışındaki bağımsız bir terminalden açın.</p></div>
+        <div class="gotcha"><span class="tag">Ağ</span><h4>RPi4'ü IP değiştiğinde MAC'ten bulma</h4><p>DHCP her açılışta farklı IP verebiliyor. Çözüm: bilinen WiFi MAC'inden (<code>ip neigh show | grep &lt;mac&gt;</code>, önce ağı taramak için <code>ping</code> ile ARP tablosunu doldurun) cihazı bulun — IP'yi tahmin etmekten çok daha güvenilir.</p></div>
+        <div class="gotcha"><span class="tag">Ağ</span><h4>GNOME "No Wi-Fi Adapter Found" ama wlan0 var</h4><p>Netplan <code>renderer: networkd</code> olduğunda, GNOME'un WiFi paneli (NetworkManager'a bakar) cihazı görmez — ama <code>ip link show wlan0</code>'da arayüz gerçekten var. Çözüm: netplan dosyasında <code>renderer: NetworkManager</code> yapıp <code>sudo netplan apply</code>.</p></div>
+        <div class="gotcha"><span class="tag">URDF</span><h4>Encoder/tik kalibrasyonu, URDF ölçüleriyle karışmasın</h4><p><code>esp32s3_config.h</code>'deki <code>WHEEL_DIAMETER</code>/<code>COUNTS_PER_REV</code> odometri hesaplamasını, <code>2wd_properties.urdf.xacro</code>'daki ölçüler ise sadece RViz görselleştirmesini etkiler — ikisi birbirinden bağımsız dosyalardır, biri güncellenince diğeri otomatik güncellenmez.</p></div>
       </div>
     </section>
 
 
-    <!-- 11. EKLER: TAM DOSYALAR -->
+    <!-- 11. JOYSTICK TELEOP -->
+    <section class="doc" id="joystick">
+      <div class="sec-head"><span class="sec-num">§11</span><h2>Joystick Teleop Kurulumu</h2></div>
+      <p class="sec-intro">Klavye teleop'a (<code>teleop_twist_keyboard</code>) alternatif olarak, Logitech F710
+      kablosuz gamepad ile D-pad + sağ çubuk kullanılarak sürüş kuruldu.</p>
+      <ol class="steps">
+        <li><h4>Paket kurulumu</h4><pre><code>sudo apt install ros-humble-joy -y</code></pre><p>Standart <code>ros-humble-teleop-twist-joy</code> paketi de denendi, ama bu paket D-pad'i (buton olarak gelen) hız komutuna çeviremediği için (sadece analog çubuk eksenlerini okuyabiliyor) yerine özel bir Python düğümü (<code>dpad_teleop.py</code>) yazıldı.</p></li>
+        <li><h4>Kumandayı D moduna al</h4><p>F710'un arkasındaki D/X anahtarı <strong>D</strong> (DirectInput) konumunda olmalı — Linux'un <code>joydev</code> arayüzüyle X moduna göre daha güvenilir çalışıyor.</p></li>
+        <li><h4>Ham veriyi test et</h4><pre><code>ros2 run joy joy_node
+# ikinci terminalde:
+ros2 topic echo /joy</code></pre><p>Çubuk/tuş hareketleriyle hangi <code>axes[]</code>/<code>buttons[]</code> index'inin değiştiğini bulun — bu kontrolcüye özel haritayı aşağıdaki tabloda doğruladık, genel F710 dokümanlarıyla birebir aynı çıkmayabilir.</p></li>
+      </ol>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Kontrol</th><th>Index</th><th>Tip</th></tr></thead>
+          <tbody>
+            <tr><td>Sol çubuk sağ/sol — sol çubuk ileri/geri</td><td class="num">axes[0] / axes[1]</td><td class="muted">analog</td></tr>
+            <tr><td>LT / RT (tetikler)</td><td class="num">axes[2] / axes[3]</td><td class="muted">analog, boşta 1.0</td></tr>
+            <tr><td>Sağ çubuk sağ/sol · ileri/geri</td><td class="num">axes[4] / axes[5]</td><td class="muted">analog</td></tr>
+            <tr><td>D-pad sol · aşağı · sağ · yukarı</td><td class="num">buttons[0–3]</td><td class="muted">dijital</td></tr>
+            <tr><td>LB <span class="muted">(ölü-adam anahtarı)</span> · RB</td><td class="num">buttons[4] / buttons[5]</td><td class="muted">dijital</td></tr>
+            <tr><td>X · A · B · Y</td><td class="num">buttons[0,1,2,3] <span class="muted">(XInput sırası)</span></td><td class="muted">dijital</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <span class="lbl">Güvenlik — ölü adam anahtarı</span>
+        <code>dpad_teleop.py</code>, <strong>LB (buton 4) basılı tutulmadığı sürece hiçbir hız komutu
+        yayınlamaz</strong>. Bu, yanlışlıkla D-pad'e dokunup robotun fırlamasını önler. Yeni bir kontrolcü
+        kullanacaksanız bu davranışı koruyun.
+      </div>
+    </section>
+
+    <!-- 12. SYSTEMD -->
+    <section class="doc" id="systemd">
+      <div class="sec-head"><span class="sec-num">§12</span><h2>Sistemin Otomatik Başlatılması (systemd)</h2></div>
+      <p class="sec-intro">RPi4 her açıldığında temel sistem (micro-ROS köprüsü + EKF) ve joystick zinciri
+      elle hiçbir şey çalıştırmadan ayağa kalkar. Üç servis, aynı desende kuruldu.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Servis</th><th>Görev</th><th>Bağımlılık</th></tr></thead>
+          <tbody>
+            <tr><td><code>linorobot2_bringup.service</code></td><td class="muted">micro-ROS agent + EKF + joint_state/robot_state publisher</td><td class="muted">—</td></tr>
+            <tr><td><code>joy_node.service</code></td><td class="muted">F710'u okuyup <code>/joy</code> yayınlar</td><td class="muted">—</td></tr>
+            <tr><td><code>joystick_teleop.service</code></td><td class="muted"><code>dpad_teleop.py</code> — <code>/joy</code> → <code>/cmd_vel</code></td><td class="muted"><code>joy_node.service</code>, <code>linorobot2_bringup.service</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Her üçü de <code>/etc/systemd/system/</code> altında, tam içerikleri <a href="./systemd/">systemd/</a>
+      klasöründe. Kurulum:</p>
+      <pre><code>sudo cp systemd/*.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now linorobot2_bringup.service joy_node.service joystick_teleop.service</code></pre>
+      <div class="callout warn">
+        <span class="lbl">Bilinen kalıcı sorun — henüz tam çözülmedi</span>
+        LIDAR/SLAM durdurulduğunda <code>linorobot2_bringup.service</code>'in içindeki EKF düğümü bazen
+        sessizce takılıp <code>/odom</code> ve TF'teki <code>odom</code> çerçevesini kaybediyor — servis
+        <code>active</code> görünse bile. <code>start_robot.sh</code> (§13) bunu her çalıştırmada otomatik
+        yeniden başlatarak aşıyor, ama kök neden (neden koptuğu) tam netleşmedi.
+      </div>
+    </section>
+
+    <!-- 13. SLAM/NAV2 -->
+    <section class="doc" id="slam-nav2">
+      <div class="sec-head"><span class="sec-num">§13</span><h2>SLAM / Nav2 Kullanımı</h2></div>
+      <ol class="steps">
+        <li><h4>Haritalama oturumunu başlat</h4><pre><code>~/start_robot.sh</code></pre><p>Script (<a href="./scripts/start_robot.sh">scripts/start_robot.sh</a>): temel sistemin hazır olmasını bekler, LIDAR'ı (<code>hls_lfcd_lds_driver</code>) ve <code>linorobot2_navigation</code>'ın <code>slam.launch.py</code>'sini (SLAM Toolbox + tam Nav2 yığınını birlikte) başlatır.</p></li>
+        <li><h4>RViz — ayrı bir bilgisayardan</h4><pre><code>source /opt/ros/humble/setup.bash
+source ~/linorobot2_ws/install/setup.bash
+ros2 launch linorobot2_viz slam.launch.py</code></pre><p>Bu, <code>linorobot2_viz</code> paketinin kendi <code>linorobot2_slam.rviz</code> config'ini açar. <strong>LIDAR verisi görünmüyorsa</strong> §10'daki QoS notuna bakın — Best Effort/Reliable uyumsuzluğu RViz'de sessizce "hiçbir şey göstermeme" ile sonuçlanır, hata vermez.</p></li>
+        <li><h4>Durdurma</h4><p>Script çalışan terminalde <strong>Ctrl+C</strong> — <code>cleanup()</code> fonksiyonu LIDAR/SLAM'i kapatır ve köprüyü otomatik yeniden başlatır (bkz. §12 kutusu).</p></li>
+      </ol>
+      <div class="callout">
+        <span class="lbl">RViz'i WiFi üzerinden sürekli açık bırakmayın</span>
+        Bkz. §10 — DDS geri basıncı (back-pressure) EKF/agent'ın zamanlamasını bozabiliyor. Sadece kontrol
+        için açıp kapatın.
+      </div>
+
+      <h3>Nav2/EKF parametre ayarları — <span class="muted">stoktan farklı olan değerler</span></h3>
+      <p class="sec-intro">Upstream <code>linorobot2</code>'a göre bu robotta değiştirilen parametreler (tam dosyalar §14'te):</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Dosya</th><th>Parametre</th><th>Stok (upstream)</th><th>Bu robotta</th></tr></thead>
+          <tbody>
+            <tr><td><code>ekf.yaml</code></td><td><code>frequency</code></td><td class="num">50.0</td><td class="num">10.0</td></tr>
+            <tr><td rowspan="3"><code>navigation.yaml</code></td><td>controller_server: <code>max_vel_x</code> / <code>max_speed_xy</code></td><td class="num">0.4</td><td class="num">0.29</td></tr>
+            <tr><td>global/local_costmap: <code>robot_radius</code></td><td class="num">0.22</td><td class="num">0.13</td></tr>
+            <tr><td>velocity_smoother: <code>max_velocity</code>/<code>min_velocity</code>[0]</td><td class="num">±0.5</td><td class="num">±0.29</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="lbl">Not</span>
+        <code>0.29 m/s</code>, joystick teleop'taki (<code>dpad_teleop.py</code>) <code>LINEAR_SPEED</code> ile
+        aynı değer — robotun test edilmiş güvenli azami hızı. <code>robot_radius</code> (0.13), şasinin gerçek
+        ~26cm genişliğine göre ayarlı. Listelenmeyen tüm diğer parametreler stok/upstream değerinde.
+      </div>
+    </section>
+
+    <!-- 14. EKLER: TAM DOSYALAR -->
     <section class="doc" id="ekler">
-      <div class="sec-head"><span class="sec-num">§11</span><h2>Ekler — Tam Dosya İçerikleri</h2></div>
+      <div class="sec-head"><span class="sec-num">§14</span><h2>Ekler — Tam Dosya İçerikleri</h2></div>
       <p class="sec-intro">Bu kılavuzda referans verilen iki dosyanın <strong>tam, değiştirilmemiş içeriği</strong> —
       kopyalayıp doğrudan kullanabilirsiniz.</p>
 
@@ -986,16 +1271,21 @@ bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modeli
 // projesinin ESP32-S3 config şablonu temel alınmış, aşağıdaki değerler bu
 // robota özel olarak fiziksel ölçüm ve kalibrasyonla belirlenmiştir:
 //
+//   Şasi             : "Waffle" tarzı 4 katlı gövde
 //   Motor            : 2x Pololu 25D, 99:1 dişli oranı, #3219 (48 CPR encoder)
 //   Sürücü           : 2x BTS7960 (IBT_2)
 //   MOTOR_MAX_RPM    : Pololu #3219 datasheet&#x27;inden (100 RPM, yüksüz @ 12V)
-//   COUNTS_PER_REV1/2: `calibration/` firmware&#x27;i ile `sample` komutuyla ölçüldü
-//                      (Motor1/SOL=2103, Motor2/SAĞ=2146)
-//   WHEEL_DIAMETER   : Kumpasla fiziksel ölçüm (66mm = 0.066m)
+//   COUNTS_PER_REV1/2: gerçek 1m/2m mezura testiyle geriye hesaplanarak
+//                      kalibre edildi (Motor1/SOL=2296, Motor2/SAĞ=2327) —
+//                      yöntem için bkz. index.html §08
+//   WHEEL_DIAMETER   : tur testiyle ölçülen etkin çap (64.6mm) — kumpasla
+//                      ölçülen fiziksel 66mm&#x27;den teker kayması nedeniyle
+//                      küçük bir fark var
+//   LR_WHEELS_DISTANCE: sol-sağ tekerlek merkezleri arası, fiziksel ölçüm
 //   Pin ataması      : Motor1(SOL)=GPIO12/13+encoder GPIO6/7,
 //                      Motor2(SAĞ)=GPIO10/11+encoder GPIO4/5
-//   WIFI_* / AGENT_IP/ SYSLOG_*: Bu projede kullanılmıyor — ESP32↔RPi4
-//                      bağlantısı USB seri (micro-ROS, 921600 baud) üzerinden
+//   WIFI_* / AGENT_IP/ SYSLOG_*: kullanılmıyor — ESP32↔RPi4 bağlantısı USB
+//                      seri (micro-ROS, 921600 baud) üzerinden
 //
 // Aşağıdaki lisans bildirimi, temel alınan orijinal linorobot2_hardware
 // şablonuna aittir (Apache 2.0 — değiştirilmeden korunmuştur).
@@ -1003,14 +1293,14 @@ bash install_linorobot2.bash 2wd a1</code></pre><p>İkinci argüman LIDAR modeli
 //
 // Copyright (c) 2021 Juan Miguel Jimeno
 //
-// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+// distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
@@ -1066,17 +1356,17 @@ ROBOT ORIENTATION
 */
 
 //define your robot&#x27; specs here
-#define MOTOR_MAX_RPM 100                   // motor&#x27;s max RPM (Pololu #3207, 100 RPM no-load @ 12V)
+#define MOTOR_MAX_RPM 100                   // motor&#x27;s max RPM (Pololu #3219, 100 RPM no-load @ 12V)
 #define MAX_RPM_RATIO 0.85                  // max RPM allowed for each MAX_RPM_ALLOWED = MOTOR_MAX_RPM * MAX_RPM_RATIO
 #define MOTOR_OPERATING_VOLTAGE 12          // motor&#x27;s operating voltage (used to calculate max RPM)
 #define MOTOR_POWER_MAX_VOLTAGE 12          // max voltage of the motor&#x27;s power source (used to calculate max RPM)
 #define MOTOR_POWER_MEASURED_VOLTAGE 12     // current voltage reading of the power connected to the motor (used for calibration)
-#define COUNTS_PER_REV1 2103                 // wheel1 encoder&#x27;s no of ticks per rev (reverted 2026-07-23 — recalibrated value 2186 did not fix left-lag imbalance, reverted back)
-#define COUNTS_PER_REV2 2146                 // wheel2 encoder&#x27;s no of ticks per rev (reverted 2026-07-23, same reason)
+#define COUNTS_PER_REV1 2296                 // SOL motor — 2m/4.5cm sapma testinden geriye hesaplandı, bkz. index.html §08
+#define COUNTS_PER_REV2 2327                 // SAĞ motor — aynı yöntem
 #define COUNTS_PER_REV3 450                 // wheel3 encoder&#x27;s no of ticks per rev
 #define COUNTS_PER_REV4 450                 // wheel4 encoder&#x27;s no of ticks per rev
-#define WHEEL_DIAMETER 0.066                // wheel&#x27;s diameter in meters
-#define LR_WHEELS_DISTANCE 0.160            // distance between left and right wheels
+#define WHEEL_DIAMETER 0.0646               // wheel&#x27;s diameter in meters — tur testiyle ölçülen etkin çap (kumpas: 0.066)
+#define LR_WHEELS_DISTANCE 0.30             // distance between left and right wheels — fiziksel ölçüm
 #define PWM_BITS 10                         // PWM Resolution of the microcontroller
 #define PWM_FREQUENCY 20000                 // PWM Frequency
 
@@ -1192,17 +1482,17 @@ ROBOT ORIENTATION
 
 #define AGENT_IP { 192, 168, 1, 100 }  // eg IP of the desktop computer
 #define AGENT_PORT 8888
-#define WIFI_SSID &quot;WIFI_SSID&quot;
-#define WIFI_PASSWORD &quot;WIFI_PASSWORD&quot;
+#define WIFI_SSID "WIFI_SSID"
+#define WIFI_PASSWORD "WIFI_PASSWORD"
 // Enable WiFi with null terminated list of multiple APs SSID and password
-// #define WIFI_AP_LIST {{&quot;WIFI_SSID&quot;, &quot;WIFI_PASSWORD&quot;}, {NULL}}
+// #define WIFI_AP_LIST {{"WIFI_SSID", "WIFI_PASSWORD"}, {NULL}}
 #define WIFI_MONITOR 2 // min. period to send wifi signal strength to syslog
 // #define USE_ARDUINO_OTA
 // #define USE_SYSLOG
 #define SYSLOG_SERVER { 192, 168, 1, 100 }  // eg IP of the desktop computer
 #define SYSLOG_PORT 514
-#define DEVICE_HOSTNAME &quot;esp32s3&quot;
-#define APP_NAME &quot;hardware&quot;
+#define DEVICE_HOSTNAME "esp32s3"
+#define APP_NAME "hardware"
 // #define USE_LIDAR_UDP
 #define LIDAR_RXD 2
 // #define LIDAR_PWM 15
@@ -1213,8 +1503,8 @@ ROBOT ORIENTATION
 #define BAUDRATE 921600
 #define SDA_PIN 8 // specify I2C pins
 #define SCL_PIN 9
-#define NODE_NAME &quot;esp32s3&quot;
-// #define TOPIC_PREFIX &quot;esp32s3/&quot;
+#define NODE_NAME "esp32s3"
+// #define TOPIC_PREFIX "esp32s3/"
 
 // battery voltage ADC pin
 #define BATTERY_PIN 1
@@ -1240,7 +1530,7 @@ const int16_t ADC_LUT[4096] = { /* insert adc_calibrate data here */ };
 
 #ifdef USE_SYSLOG
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){ \
-    syslog(LOG_ERR, &quot;%s RCCHECK failed %d&quot;, __FUNCTION__, temp_rc); \
+    syslog(LOG_ERR, "%s RCCHECK failed %d", __FUNCTION__, temp_rc); \
     }}
 #else
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){ \
@@ -1252,18 +1542,17 @@ const int16_t ADC_LUT[4096] = { /* insert adc_calibrate data here */ };
 </code></pre>
 
       <h3>install_linorobot2.bash <span class="file-meta">— RPi4 kurulum betiği, proje notuyla</span></h3>
-      <p class="file-note">Betik mantığı upstream'den değiştirilmemiştir (güvenilirlik için); başına bu robotta tam olarak nasıl çalıştırıldığını açıklayan bir proje notu eklenmiştir.</p>
+      <p class="file-note">Betik mantığı upstream'den değiştirilmemiştir; başına bu robotta nasıl çalıştırıldığını açıklayan bir proje notu eklenmiştir.</p>
       <pre class="file-block"><code>#!/usr/bin/env bash
 # ==============================================================================
 # LinoRobot2 Projesi — Raspberry Pi 4 Kurulum Notu
 # ==============================================================================
-# Bu robotta şu şekilde çalıştırılmıştır:
+# Bu robotta kurulu LIDAR: LDS-01 (ROBOTIS, hls_lfcd_lds_driver paketi, 230400 baud).
+# Bu betik LDS-01&#x27;i desteklemez (LASER_SENSOR_ARRAY: ydlidar/xv11/ld06/ld19/
+# stl27l/a1/a2/a3/c1/s1/s2/s3) — ikinci argüman olarak &quot;-&quot; verilip betiğin
+# kendi LIDAR kurulumu atlanır, LDS-01 ayrıca elle eklenir (bkz. §07):
 #
-#     $ bash install_linorobot2.bash 2wd a1
-#
-# (2wd = diferansiyel sürüşlü taban; a1 = RPLIDAR A1M8. Proje başlangıçta
-#  RPLIDAR S1 ile kurulmuş, sonradan A1M8&#x27;e geçilmiş — &quot;s1&quot; argümanıyla da
-#  aynı script sorunsuz çalışmaktadır, ikisi de sllidar_ros2 sürücüsünü kurar.)
+#     $ bash install_linorobot2.bash 2wd -
 #
 # Betiğin kendisi resmi linorobot2 deposundan (humble dalı) değiştirilmeden
 # alınmıştır — aşağıdaki lisans/telif bildirimi orijinal yazara aittir.
@@ -1634,6 +1923,907 @@ echo
 echo &quot;INSTALLATION DONE.&quot;
 echo
 echo &quot;Restart your robot computer now.&quot;
+</code></pre>
+
+      <h3>2wd_properties.urdf.xacro <span class="file-meta">— linorobot2_description/urdf/</span></h3>
+      <p class="file-note">Bu robotun gerçek mezura ölçüleriyle güncellenmiş URDF özellik dosyası.</p>
+      <pre class="file-block"><code>&lt;?xml version="1.0"?&gt;
+&lt;robot xmlns:xacro="http://ros.org/wiki/xacro"&gt;
+  &lt;!-- Degerler gercek mezura olcumleriyle belirlenmistir (Waffle sasi) --&gt;
+  &lt;xacro:property name="base_length" value="0.27" /&gt;
+  &lt;xacro:property name="base_width" value="0.27" /&gt;
+  &lt;xacro:property name="base_height" value="0.003" /&gt;
+  &lt;xacro:property name="base_mass" value="1" /&gt;
+
+  &lt;xacro:property name="wheel_radius" value="0.0325" /&gt; &lt;!-- 6.5cm cap olcumu --&gt;
+  &lt;xacro:property name="wheel_width" value="0.017" /&gt;
+  &lt;xacro:property name="wheel_pos_x" value="0.085" /&gt; &lt;!-- ana teker on kenardan 5cm, merkeze gore +8.5cm --&gt;
+  &lt;xacro:property name="wheel_pos_y" value="0.1565" /&gt; &lt;!-- teker disi 33cm - 1.7cm genislik = 31.3cm merkez-merkez --&gt;
+  &lt;xacro:property name="wheel_pos_z" value="0.023" /&gt;
+  &lt;xacro:property name="wheel_mass" value=".1" /&gt;
+  &lt;xacro:property name="wheel_torque" value="20" /&gt;
+  &lt;xacro:property name="front_caster_wheel" value="false" /&gt; &lt;!-- onde caster yok, ikisi de arkada --&gt;
+  &lt;xacro:property name="rear_caster_wheel" value="true" /&gt;
+
+  &lt;xacro:property name="laser_pose"&gt;
+    &lt;origin xyz="0.035 0 0.15" rpy="0 0 0"/&gt; &lt;!-- on kenardan 10cm, ortali, yerden 15cm --&gt;
+  &lt;/xacro:property&gt;
+
+  &lt;xacro:property name="depth_sensor_pose"&gt;
+    &lt;origin xyz="0.14 0.0 0.045" rpy="0 0 0"/&gt;
+  &lt;/xacro:property&gt;
+
+  &lt;xacro:property name="rear_camera_sensor_pose"&gt;
+    &lt;origin xyz="-0.14 0.0 0.045" rpy="0 0 3.14159"/&gt;
+  &lt;/xacro:property&gt;
+
+&lt;/robot&gt;
+</code></pre>
+
+      <h3>linorobot2_bringup.service <span class="file-meta">— /etc/systemd/system/</span></h3>
+      <p class="file-note">Temel sistem: micro-ROS agent + EKF + robot_state_publisher.</p>
+      <pre class="file-block"><code>[Unit]
+Description=linorobot2 temel sistemi (micro-ROS agent + EKF + robot tanimi)
+After=network.target
+
+[Service]
+Type=simple
+User=pi4
+Group=pi4
+Environment=HOME=/home/pi4
+Environment=LINOROBOT2_BASE=2wd
+ExecStart=/bin/bash -lc &#x27;unset LINOROBOT2_LASER_SENSOR; source /opt/ros/humble/setup.bash &amp;&amp; source /home/pi4/linorobot2_ws/install/setup.bash &amp;&amp; exec ros2 launch linorobot2_bringup bringup.launch.py micro_ros_baudrate:=921600&#x27;
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+      <h3>joy_node.service <span class="file-meta">— /etc/systemd/system/</span></h3>
+      <p class="file-note">F710 kumandasını okuyup /joy yayınlar.</p>
+      <pre class="file-block"><code>[Unit]
+Description=Logitech F710 joystick reader (joy_node)
+After=network.target
+
+[Service]
+Type=simple
+User=pi4
+Group=pi4
+Environment=HOME=/home/pi4
+ExecStart=/bin/bash -lc &#x27;source /opt/ros/humble/setup.bash &amp;&amp; exec ros2 run joy joy_node&#x27;
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+      <h3>joystick_teleop.service <span class="file-meta">— /etc/systemd/system/</span></h3>
+      <p class="file-note">dpad_teleop.py'yi çalıştırır — /joy'u /cmd_vel'e çevirir.</p>
+      <pre class="file-block"><code>[Unit]
+Description=D-pad + sag cubuk teleop (dpad_teleop.py -&gt; /cmd_vel)
+After=network.target joy_node.service linorobot2_bringup.service
+Wants=joy_node.service
+
+[Service]
+Type=simple
+User=pi4
+Group=pi4
+Environment=HOME=/home/pi4
+ExecStart=/bin/bash -lc &#x27;source /opt/ros/humble/setup.bash &amp;&amp; source /home/pi4/linorobot2_ws/install/setup.bash &amp;&amp; exec python3 /home/pi4/joystick_ws/dpad_teleop.py&#x27;
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+      <h3>start_robot.sh <span class="file-meta">— ~/ (RPi4)</span></h3>
+      <p class="file-note">LIDAR + SLAM/Nav2'yi başlatan, durunca köprüyü otomatik tazeleyen script.</p>
+      <pre class="file-block"><code>#!/bin/bash
+
+LOG_DIR="$HOME/robot_logs"
+mkdir -p "$LOG_DIR"
+
+cleanup() {
+  echo ""
+  echo "Kapatiliyor (LIDAR + SLAM)..."
+  kill $(jobs -p) 2&gt;/dev/null
+  wait 2&gt;/dev/null
+  echo "Temel sistem (micro-ROS koprusu) temiz durum icin yeniden baslatiliyor..."
+  sudo systemctl restart linorobot2_bringup.service
+  sleep 3
+  echo "Tamam. Koprunu tekrar ayakta, joystick/cmd_vel calismali."
+}
+trap cleanup EXIT INT TERM
+
+source /opt/ros/humble/setup.bash
+source "$HOME/linorobot2_ws/install/setup.bash"
+
+echo "[0/2] Temel sistemin (linorobot2_bringup.service) hazir olmasi bekleniyor..."
+if ! systemctl is-active --quiet linorobot2_bringup.service; then
+  echo "  Servis aktif degil, baslatiliyor..."
+  sudo systemctl start linorobot2_bringup.service
+fi
+
+for i in $(seq 1 20); do
+  if ros2 topic list 2&gt;/dev/null | grep -q "^/odom/unfiltered$"; then
+    echo "  Temel sistem hazir (/odom/unfiltered goruluyor)."
+    break
+  fi
+  sleep 1
+  if [ "$i" -eq 20 ]; then
+    echo "  UYARI: 20 saniyede /odom/unfiltered gorulemedi, yine de devam ediliyor."
+    echo "  Kontrol icin: systemctl status linorobot2_bringup.service"
+  fi
+done
+
+echo "[1/2] LIDAR surucusu baslatiliyor (LDS-01 / hls_lfcd_lds_driver)..."
+ros2 launch hls_lfcd_lds_driver hlds_laser.launch.py \
+  &gt; "$LOG_DIR/lidar.log" 2&gt;&amp;1 &amp;
+sleep 3
+
+echo "[2/2] SLAM + Nav2 baslatiliyor..."
+ros2 launch linorobot2_navigation slam.launch.py \
+  &gt; "$LOG_DIR/slam.log" 2&gt;&amp;1 &amp;
+
+echo ""
+echo "Hepsi baslatildi. Loglar: $LOG_DIR/ (lidar.log, slam.log)"
+echo "Temel sistemin loglari icin: journalctl -u linorobot2_bringup.service -f"
+echo "Durdurmak icin Ctrl+C&#x27;ye bas."
+echo ""
+
+wait
+</code></pre>
+
+      <h3>dpad_teleop.py <span class="file-meta">— ~/joystick_ws/ (RPi4)</span></h3>
+      <p class="file-note">D-pad + sağ çubuk → /cmd_vel özel teleop düğümü.</p>
+      <pre class="file-block"><code>#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Joy
+from geometry_msgs.msg import Twist
+
+LINEAR_SPEED = 0.29
+ANGULAR_SCALE = 0.75
+DEADMAN_BUTTON = 4
+DPAD_DOWN = 1
+DPAD_UP = 3
+RIGHT_STICK_X_AXIS = 4
+
+class DpadTeleop(Node):
+    def __init__(self):
+        super().__init__(&#x27;dpad_teleop&#x27;)
+        self.create_subscription(Joy, &#x27;joy&#x27;, self.joy_cb, 10)
+        self.pub = self.create_publisher(Twist, &#x27;cmd_vel&#x27;, 10)
+
+    def joy_cb(self, msg: Joy):
+        twist = Twist()
+        if msg.buttons[DEADMAN_BUTTON]:
+            if msg.buttons[DPAD_UP]:
+                twist.linear.x = LINEAR_SPEED
+            elif msg.buttons[DPAD_DOWN]:
+                twist.linear.x = -LINEAR_SPEED
+            twist.angular.z = msg.axes[RIGHT_STICK_X_AXIS] * ANGULAR_SCALE
+        self.pub.publish(twist)
+
+def main():
+    rclpy.init()
+    node = DpadTeleop()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == &#x27;__main__&#x27;:
+    main()
+</code></pre>
+
+      <h3>go_1m_test.py <span class="file-meta">— ~/ (RPi4)</span></h3>
+      <p class="file-note">Odometri kalibrasyonu için otomatik 1m/2m düz sürüş test betiği.</p>
+      <pre class="file-block"><code>#!/usr/bin/env python3
+import math
+import sys
+import time
+
+import rclpy
+from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry
+from rclpy.node import Node
+
+TARGET_M = 1.0
+CRUISE_MPS = 0.10
+CREEP_MPS = 0.05
+CREEP_ZONE_M = 0.15
+TIMEOUT_S = 30.0
+
+
+class OneMeterTest(Node):
+    def __init__(self):
+        super().__init__("one_meter_test")
+        self.pub = self.create_publisher(Twist, "/cmd_vel", 10)
+        self.create_subscription(Odometry, "/odom/unfiltered", self.odom_cb, 10)
+        self.x0 = None
+        self.x = self.y = None
+        self.start_t = None
+        self.done = False
+        self.timer = self.create_timer(0.05, self.step)
+
+    def odom_cb(self, msg):
+        self.x = msg.pose.pose.position.x
+        self.y = msg.pose.pose.position.y
+        if self.x0 is None:
+            self.x0, self.y0 = self.x, self.y
+
+    def distance(self):
+        return math.hypot(self.x - self.x0, self.y - self.y0)
+
+    def send(self, v):
+        t = Twist()
+        t.linear.x = v
+        self.pub.publish(t)
+
+    def stop(self):
+        for _ in range(20):
+            self.send(0.0)
+            time.sleep(0.02)
+
+    def step(self):
+        if self.done:
+            return
+        if self.x0 is None:
+            if self.start_t is None:
+                self.start_t = time.time()
+            if time.time() - self.start_t &gt; 5.0:
+                print("HATA: 5 sn icinde /odom/unfiltered gelmedi, durduruluyor.")
+                self.finish()
+            return
+        if self.start_t is None:
+            self.start_t = time.time()
+            print("Baslangic alindi, ileri gidiliyor...")
+        d = self.distance()
+        if d &gt;= TARGET_M:
+            self.finish(d)
+            return
+        if time.time() - self.start_t &gt; TIMEOUT_S:
+            print(f"ZAMAN ASIMI ({TIMEOUT_S}s), durduruluyor. Odometre mesafesi: {d:.3f} m")
+            self.finish(d)
+            return
+        v = CREEP_MPS if (TARGET_M - d) &lt; CREEP_ZONE_M else CRUISE_MPS
+        self.send(v)
+
+    def finish(self, d=None):
+        self.done = True
+        self.timer.cancel()
+        self.stop()
+        if d is None and self.x0 is not None:
+            d = self.distance()
+        if d is not None:
+            print("")
+            print(f"Odometre (Euclid) mesafe : {d:.3f} m")
+            print(f"Hedef                    : {TARGET_M:.3f} m")
+            print("Simdi mezuru ile gercek mesafeyi olc ve buraya yaz.")
+        print(f"Son odom konumu  x={self.x} y={self.y}" if self.x is not None else "")
+
+
+def main():
+    rclpy.init()
+    node = OneMeterTest()
+    try:
+        while rclpy.ok() and not node.done:
+            rclpy.spin_once(node, timeout_sec=0.05)
+    except KeyboardInterrupt:
+        print("\nCtrl+C: durduruluyor.")
+        node.stop()
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+</code></pre>
+
+      <h3>ekf.yaml <span class="file-meta">— linorobot2_base/config/ (upstream yoldaki hali)</span></h3>
+      <p class="file-note">EKF güncelleme frekansı stoktan 50.0&#x27;dan 10.0&#x27;a düşürüldü (bkz. §13), geri kalanı stok.</p>
+      <pre class="file-block"><code>ekf_filter_node:
+    ros__parameters:
+        frequency: 10.0
+        two_d_mode: true
+        publish_tf: true
+ 
+        map_frame: map             
+        odom_frame: odom            
+        base_link_frame: base_footprint 
+        world_frame: odom 
+
+        #x     , y     , z,
+        #roll  , pitch , yaw,
+        #vx    , vy    , vz,
+        #vroll , vpitch, vyaw,
+        #ax    , ay    , az
+        odom0: odom/unfiltered
+        odom0_config: [false, false, false,
+                       false, false, false,
+                       true, true, false,
+                       false, false, true,
+                       false, false, false]
+
+        imu0: imu/data
+        imu0_config: [false, false, false,
+                      false, false, false,
+                      false, false, false,
+                      false, false, true,
+                      false, false, false]
+</code></pre>
+
+      <h3>navigation.yaml <span class="file-meta">— linorobot2_navigation/config/ (upstream yoldaki hali)</span></h3>
+      <p class="file-note">Nav2 parametreleri — robotun gerçek azami hızı (0.29 m/s) ve gövde yarıçapına (0.13m) göre güncellenen 4 parametre dışında stok (bkz. §13).</p>
+      <pre class="file-block"><code>amcl:
+  ros__parameters:
+    use_sim_time: false
+    alpha1: 0.2
+    alpha2: 0.2
+    alpha3: 0.2
+    alpha4: 0.2
+    alpha5: 0.2
+    base_frame_id: "base_footprint"
+    beam_skip_distance: 0.5
+    beam_skip_error_threshold: 0.9
+    beam_skip_threshold: 0.3
+    do_beamskip: false
+    global_frame_id: "map"
+    lambda_short: 0.1
+    laser_likelihood_max_dist: 2.0
+    laser_max_range: 100.0
+    laser_min_range: -1.0
+    laser_model_type: "likelihood_field"
+    max_beams: 60
+    max_particles: 2000
+    min_particles: 500
+    odom_frame_id: "odom"
+    pf_err: 0.05
+    pf_z: 0.99
+    recovery_alpha_fast: 0.0
+    recovery_alpha_slow: 0.0
+    resample_interval: 1
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    save_pose_rate: 0.5
+    sigma_hit: 0.2
+    tf_broadcast: true
+    transform_tolerance: 1.0
+    update_min_a: 0.2
+    update_min_d: 0.25
+    z_hit: 0.5
+    z_max: 0.05
+    z_rand: 0.5
+    z_short: 0.05
+    scan_topic: scan
+
+amcl_map_client:
+  ros__parameters:
+    use_sim_time: false
+
+amcl_rclcpp_node:
+  ros__parameters:
+    use_sim_time: false
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: false
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /odom
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    enable_groot_monitoring: true
+    groot_zmq_publisher_port: 1666
+    groot_zmq_server_port: 1667
+    plugin_lib_names:
+    - nav2_compute_path_to_pose_action_bt_node
+    - nav2_compute_path_through_poses_action_bt_node
+    - nav2_follow_path_action_bt_node
+    - nav2_back_up_action_bt_node
+    - nav2_spin_action_bt_node
+    - nav2_wait_action_bt_node
+    - nav2_clear_costmap_service_bt_node
+    - nav2_is_stuck_condition_bt_node
+    - nav2_goal_reached_condition_bt_node
+    - nav2_goal_updated_condition_bt_node
+    - nav2_initial_pose_received_condition_bt_node
+    - nav2_reinitialize_global_localization_service_bt_node
+    - nav2_rate_controller_bt_node
+    - nav2_distance_controller_bt_node
+    - nav2_speed_controller_bt_node
+    - nav2_truncate_path_action_bt_node
+    - nav2_goal_updater_node_bt_node
+    - nav2_recovery_node_bt_node
+    - nav2_pipeline_sequence_bt_node
+    - nav2_round_robin_node_bt_node
+    - nav2_transform_available_condition_bt_node
+    - nav2_time_expired_condition_bt_node
+    - nav2_distance_traveled_condition_bt_node
+    - nav2_single_trigger_bt_node
+    - nav2_is_battery_low_condition_bt_node
+    - nav2_navigate_through_poses_action_bt_node
+    - nav2_navigate_to_pose_action_bt_node
+    - nav2_remove_passed_goals_action_bt_node
+    - nav2_planner_selector_bt_node
+    - nav2_controller_selector_bt_node
+    - nav2_goal_checker_selector_bt_node
+
+bt_navigator_rclcpp_node:
+  ros__parameters:
+    use_sim_time: false
+
+controller_server:
+  ros__parameters:
+    use_sim_time: false
+    controller_frequency: 20.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    progress_checker_plugin: "progress_checker"
+    goal_checker_plugins: ["general_goal_checker"] # "precise_goal_checker"
+    controller_plugins: ["FollowPath"]
+
+    # Progress checker parameters
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.5
+      movement_time_allowance: 10.0
+
+    # Goal checker parameters
+    general_goal_checker:
+      stateful: true
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
+    # DWB parameters
+    FollowPath:
+      plugin: "nav2_rotation_shim_controller::RotationShimController"
+      angular_dist_threshold: 0.785
+      forward_sampling_distance: 0.5
+      rotate_to_heading_angular_vel: 1.8
+      max_angular_accel: 3.2
+      simulate_ahead_time: 1.0
+      plugin: "dwb_core::DWBLocalPlanner"
+      debug_trajectory_details: true
+      min_vel_x: 0.0
+      min_vel_y: 0.0
+      max_vel_x: 0.29
+      max_vel_y: 0.0
+      max_vel_theta: 0.75
+      min_speed_xy: 0.0
+      max_speed_xy: 0.29
+      min_speed_theta: 0.0
+      # Add high threshold velocity for turtlebot 3 issue.
+      # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
+      acc_lim_x: 2.5
+      acc_lim_y: 0.0
+      acc_lim_theta: 3.2
+      decel_lim_x: -2.5
+      decel_lim_y: 0.0
+      decel_lim_theta: -3.2
+      vx_samples: 20
+      vy_samples: 5
+      vtheta_samples: 20
+      sim_time: 1.7
+      linear_granularity: 0.05
+      angular_granularity: 0.025
+      transform_tolerance: 0.2
+      xy_goal_tolerance: 0.25
+      trans_stopped_velocity: 0.25
+      short_circuit_trajectory_evaluation: true
+      stateful: true
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      BaseObstacle.scale: 0.02
+      PathAlign.scale: 32.0
+      PathAlign.forward_point_distance: 0.1
+      GoalAlign.scale: 24.0
+      GoalAlign.forward_point_distance: 0.1
+      PathDist.scale: 32.0
+      GoalDist.scale: 24.0
+      RotateToGoal.scale: 32.0
+      RotateToGoal.slowing_factor: 5.0
+      RotateToGoal.lookahead_time: -1.0
+      
+controller_server_rclcpp_node:
+  ros__parameters:
+    use_sim_time: false
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: false
+      footprint_padding: 0.03
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_link
+      robot_radius: 0.13 # eskisi 0.10 (20cm genislik) idi, Waffle sasiye gecis sonrasi 26cm genislige gore guncellendi
+      resolution: 0.05
+      plugins: ["static_layer", "obstacle_layer", "voxel_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan base_scan
+        footprint_clearing_enabled: true
+        max_obstacle_height: 2.0
+        combination_method: 1
+        scan:
+          topic: /scan
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          clearing: true
+          marking: true
+          data_type: "LaserScan"
+          inf_is_valid: false
+        base_scan:
+          topic: /base/scan
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          clearing: true
+          marking: true
+          data_type: "LaserScan"
+          inf_is_valid: false
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: true
+        footprint_clearing_enabled: true
+        max_obstacle_height: 2.0
+        publish_voxel_map: true
+        origin_z: 0.0
+        z_resolution: 0.05
+        z_voxels: 16
+        max_obstacle_height: 2.0
+        unknown_threshold: 15
+        mark_threshold: 0
+        observation_sources: pointcloud
+        combination_method: 1
+        pointcloud:  # no frame set, uses frame from message
+          topic: /camera/depth/color/points
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.01
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          clearing: true
+          marking: true
+          data_type: "PointCloud2"
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: true
+        enabled: true
+        subscribe_to_updates: true
+        transform_tolerance: 0.1
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        inflation_radius: 0.55
+        cost_scaling_factor: 1.0
+        inflate_unknown: false
+        inflate_around_unknown: true
+      always_send_full_costmap: true
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: false
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_base_frame: base_link
+      rolling_window: true
+      width: 3
+      height: 3
+      resolution: 0.05
+      robot_radius: 0.13 # eskisi 0.10 (20cm genislik) idi, Waffle sasiye gecis sonrasi 26cm genislige gore guncellendi
+      resolution: 0.05
+      plugins: ["obstacle_layer", "voxel_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan base_scan
+        footprint_clearing_enabled: true
+        max_obstacle_height: 2.0
+        combination_method: 1
+        scan:
+          topic: /scan
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          clearing: false
+          marking: true
+          data_type: "LaserScan"
+          inf_is_valid: false
+        base_scan:
+          topic: /base/scan
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          clearing: false
+          marking: true
+          data_type: "LaserScan"
+          inf_is_valid: false
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: true
+        footprint_clearing_enabled: true
+        max_obstacle_height: 2.0
+        publish_voxel_map: true
+        origin_z: 0.0
+        z_resolution: 0.05
+        z_voxels: 16
+        max_obstacle_height: 2.0
+        unknown_threshold: 15
+        mark_threshold: 0
+        observation_sources: pointcloud
+        combination_method: 1
+        pointcloud:  # no frame set, uses frame from message
+          topic: /camera/depth/color/points
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.01
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          clearing: true
+          marking: true
+          data_type: "PointCloud2"
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        inflation_radius: 0.55
+        cost_scaling_factor: 1.0
+        inflate_unknown: false
+        inflate_around_unknown: true
+
+map_server:
+  ros__parameters:
+    use_sim_time: false
+    yaml_filename: "turtlebot3_world.yaml"
+
+map_saver:
+  ros__parameters:
+    use_sim_time: false
+    save_map_timeout: 5.0
+    free_thresh_default: 0.25
+    occupied_thresh_default: 0.65
+    map_subscribe_transient_local: true
+
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 20.0
+    use_sim_time: false
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.5
+      use_astar: false
+      allow_unknown: true
+
+planner_server_rclcpp_node:
+  ros__parameters:
+    use_sim_time: false
+
+recoveries_server:
+  ros__parameters:
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0
+    recovery_plugins: ["spin", "backup", "wait"]
+    spin:
+      plugin: "nav2_recoveries/Spin"
+    backup:
+      plugin: "nav2_recoveries/BackUp"
+    wait:
+      plugin: "nav2_recoveries/Wait"
+    global_frame: odom
+    robot_base_frame: base_link
+    transform_timeout: 0.1
+    use_sim_time: false
+    simulate_ahead_time: 2.0
+    max_rotational_vel: 1.0
+    min_rotational_vel: 0.4
+    rotational_acc_lim: 3.2
+
+robot_state_publisher:
+  ros__parameters:
+    use_sim_time: false
+
+waypoint_follower:
+  ros__parameters:
+    loop_rate: 20
+    stop_on_failure: false
+    waypoint_task_executor_plugin: "wait_at_waypoint"   
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: true
+      waypoint_pause_duration: 200
+
+velocity_smoother:
+  ros__parameters:
+    smoothing_frequency: 20.0
+    scale_velocities: False
+    feedback: "OPEN_LOOP"
+    max_velocity: [0.29, 0.0, 2.5]
+    min_velocity: [-0.29, 0.0, -2.5]
+    max_accel: [2.5, 0.0, 3.2]
+    max_decel: [-2.5, 0.0, -3.2]
+    odom_topic: "odom"
+    odom_duration: 0.1
+    deadband_velocity: [0.0, 0.0, 0.0]
+    velocity_timeout: 1.0
+</code></pre>
+
+      <h3>install_agent_service.sh <span class="file-meta">— ~/ (RPi4)</span></h3>
+      <p class="file-note">linorobot2_bringup.service'i yazan, etkinleştiren ve başlatan kurulum betiği — ExecStart içinde LINOROBOT2_LASER_SENSOR'ü bilerek unset eder (bkz. §07).</p>
+      <pre class="file-block"><code>#!/usr/bin/env bash
+set -e
+
+ORBIROB_USER="${USER}"
+USER_HOME="${HOME}"
+
+BRINGUP_SERVICE="/etc/systemd/system/linorobot2_bringup.service"
+ROS_SETUP="/opt/ros/humble/setup.bash"
+LINOROBOT2_SETUP="${USER_HOME}/linorobot2_ws/install/setup.bash"
+
+echo "=============================================="
+echo " linorobot2_bringup.service kurulumu"
+echo "=============================================="
+echo "Kullanici: ${ORBIROB_USER}"
+echo "Ev dizini: ${USER_HOME}"
+echo
+
+if [ ! -f "${ROS_SETUP}" ]; then
+    echo "HATA: ROS2 Humble bulunamadi: ${ROS_SETUP}"
+    exit 1
+fi
+
+if [ ! -f "${LINOROBOT2_SETUP}" ]; then
+    echo "HATA: linorobot2_ws derlenmemis: ${LINOROBOT2_SETUP}"
+    exit 1
+fi
+
+echo "Servis dosyasi yaziliyor: ${BRINGUP_SERVICE}"
+
+sudo tee "${BRINGUP_SERVICE}" &gt;/dev/null &lt;&lt;EOF
+[Unit]
+Description=linorobot2 temel sistemi (micro-ROS agent + EKF + robot tanimi)
+After=network.target
+
+[Service]
+Type=simple
+User=${ORBIROB_USER}
+Group=${ORBIROB_USER}
+Environment=HOME=${USER_HOME}
+ExecStart=/bin/bash -lc &#x27;unset LINOROBOT2_LASER_SENSOR; source ${ROS_SETUP} &amp;&amp; source ${LINOROBOT2_SETUP} &amp;&amp; exec ros2 launch linorobot2_bringup bringup.launch.py micro_ros_baudrate:=921600&#x27;
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "systemd yeniden yukleniyor..."
+sudo systemctl daemon-reload
+
+echo "linorobot2_bringup.service etkinlestiriliyor (acilista otomatik baslasin diye)..."
+sudo systemctl enable linorobot2_bringup.service
+
+echo "Servis simdi baslatiliyor..."
+sudo systemctl restart linorobot2_bringup.service
+
+sleep 3
+
+echo
+echo "=============================================="
+echo " Kurulum tamamlandi"
+echo "=============================================="
+echo -n "Durum: "
+systemctl is-enabled linorobot2_bringup.service
+echo
+echo "Detayli durumu gormek icin:"
+echo "  systemctl status linorobot2_bringup.service"
+echo "Canli loglari izlemek icin:"
+echo "  journalctl -u linorobot2_bringup.service -f"
+</code></pre>
+
+      <h3>baud_scan.py <span class="file-meta">— ~/ (RPi4)</span></h3>
+      <p class="file-note">LIDAR için doğru baud hızını A5/5A sync baytına bakarak tarayan teşhis aracı (RPLIDAR döneminden kalma, tarihsel referans).</p>
+      <pre class="file-block"><code>#!/usr/bin/env python3
+"""RPLIDAR icin dogru baud&#x27;u bulmak icin taranan hizlarda a5 5a sync baytini arar."""
+import serial
+import time
+
+PORT = "/dev/ttyUSB0"
+BAUDS = [9600, 19200, 57600, 115200, 128000, 230400, 256000, 460800, 921600, 1000000]
+
+for baud in BAUDS:
+    try:
+        ser = serial.Serial(PORT, baud, timeout=1.5)
+        ser.reset_input_buffer()
+        time.sleep(0.3)
+        data = ser.read(500)
+        ser.close()
+        has_sync = b&#x27;\xa5\x5a&#x27; in data
+        nonzero = len(data) - data.count(0)
+        print(f"baud={baud:8d}  bayt_sayisi={len(data):4d}  a5-5a_sync={&#x27;EVET!&#x27; if has_sync else &#x27;hayir&#x27;:6s}  ornek={data[:16].hex()}")
+    except Exception as e:
+        print(f"baud={baud:8d}  HATA: {e}")
+</code></pre>
+
+      <h3>joint_track.py <span class="file-meta">— ~/ (RPi4)</span></h3>
+      <p class="file-note">/joint_states üzerinden sol/sağ teker devrini (tur cinsinden) izler — WHEEL_DIAMETER tur testinde kullanılan araç (bkz. §08).</p>
+      <pre class="file-block"><code>import math, rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import JointState
+
+class Track(Node):
+    def __init__(self):
+        super().__init__("joint_track")
+        self.create_subscription(JointState, "/joint_states", self.cb, 10)
+        self.start = None; self.last = None
+    def cb(self, m):
+        pos = dict(zip(m.name, m.position))
+        if not all(k in pos for k in ("left_wheel_joint", "right_wheel_joint")): return
+        self.last = pos
+        if self.start is None: self.start = pos
+    def report(self):
+        if not self.start or not self.last:
+            print("joint verisi yok"); return
+        for k in ("left_wheel_joint", "right_wheel_joint"):
+            print(f"{k}: {(self.last[k]-self.start[k])/(2*math.pi):.3f} tur")
+
+rclpy.init(); n = Track()
+try:
+    rclpy.spin(n)
+except KeyboardInterrupt:
+    n.report()
+</code></pre>
+
+      <h3>odom_track.py <span class="file-meta">— ~/ (RPi4)</span></h3>
+      <p class="file-note">/odom/unfiltered üzerinden kat edilen yolu ve başlangıca uzaklığı canlı izler — sapma/kalibrasyon testlerinde kullanılan araç (bkz. §08).</p>
+      <pre class="file-block"><code>import math, time, rclpy
+from rclpy.node import Node
+from nav_msgs.msg import Odometry
+
+class Track(Node):
+    def __init__(self):
+        super().__init__("odom_track")
+        self.create_subscription(Odometry, "/odom/unfiltered", self.cb, 10)
+        self.x0 = None; self.last = None; self.path = 0.0; self.t = time.time()
+    def cb(self, m):
+        x, y = m.pose.pose.position.x, m.pose.pose.position.y
+        if self.x0 is None:
+            self.x0, self.y0 = x, y; self.last = (x, y); return
+        self.path += math.hypot(x - self.last[0], y - self.last[1]); self.last = (x, y)
+        if time.time() - self.t &gt; 0.5:
+            self.t = time.time()
+            print(f"baslangica uzaklik: {math.hypot(x-self.x0, y-self.y0):.3f} m   toplam yol: {self.path:.3f} m", flush=True)
+
+rclpy.init(); n = Track()
+try:
+    rclpy.spin(n)
+except KeyboardInterrupt:
+    print(f"\nSON -&gt; baslangica uzaklik: {math.hypot(n.last[0]-n.x0, n.last[1]-n.y0):.3f} m   toplam yol: {n.path:.3f} m")
 </code></pre>
     </section>
 

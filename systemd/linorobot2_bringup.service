@@ -1,0 +1,16 @@
+[Unit]
+Description=linorobot2 temel sistemi (micro-ROS agent + EKF + robot tanimi)
+After=network.target
+
+[Service]
+Type=simple
+User=pi4
+Group=pi4
+Environment=HOME=/home/pi4
+Environment=LINOROBOT2_BASE=2wd
+ExecStart=/bin/bash -lc 'unset LINOROBOT2_LASER_SENSOR; source /opt/ros/humble/setup.bash && source /home/pi4/linorobot2_ws/install/setup.bash && exec ros2 launch linorobot2_bringup bringup.launch.py micro_ros_baudrate:=921600'
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
