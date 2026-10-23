@@ -36,7 +36,3 @@ gerçek mezura ölçümleriyle yapıldı (bkz. §08). LIDAR olarak ROBOTIS LDS-0
 kullanılıyor. Joystick teleop ve sistemin systemd ile otomatik başlatılması tam olarak çalışıyor.
 SLAM/Nav2 ile haritalama ve otonom navigasyon test edildi. Şaft-adaptör mekanik toleransı hassas bir
 nokta — bkz. `index.html` §05 ve §10.
-
-## Lisans
-
-[Apache License 2.0](LICENSE) — upstream `linorobot2`/`linorobot2_hardware` ile aynı.
