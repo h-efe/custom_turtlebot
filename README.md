@@ -4,13 +4,19 @@ ESP32-S3 ve Raspberry Pi 4 üzerine, [linorobot2](https://github.com/linorobot/l
 [linorobot2_hardware](https://github.com/linorobot/linorobot2_hardware) açık kaynak ekosistemiyle
 inşa edilmiş, özel (custom) mekanik parçalara sahip bir diferansiyel sürüşlü mobil robot.
 
+## Kablolama Şeması
+
+![Kablolama şeması](kablo_semasi.png)
+
+(Etkileşimli/canlı hâli: [kablo_semasi.html](kablo_semasi.html) — indirip tarayıcıda açın.)
+
 ## İçindekiler
 
 - `index.html` — tam yapım kılavuzu: malzeme listesi, güç mimarisi, kablolama şeması, yazılım
   kurulumu, kalibrasyon, joystick teleop, systemd otomatik başlatma, SLAM/Nav2 ve bilinen sorunlar
   (tarayıcıda açılabilir)
-- `kablo_semasi.html` — `index.html` §04'teki şemayı tamamlayan, ayrı figürlere bölünmüş detaylı
-  kablolama referansı (güç / sinyal+motor / ortak toprak) (tarayıcıda açılabilir)
+- `kablo_semasi.html` (+ `kablo_semasi.png` statik görseli) — `index.html` §04'teki şemayı tamamlayan,
+  ayrı figürlere bölünmüş detaylı kablolama referansı (güç / sinyal+motor / ortak toprak)
 - `TurtleBot_Yapim_Kilavuzu.pdf` — aynı içeriğin PDF hâli (not: `index.html` kadar güncel olmayabilir)
 - `esp32s3_config.h` — bu robotta fiilen kullanılan, kalibre edilmiş ESP32-S3 yapılandırma dosyası
 - `install_linorobot2.bash` — Raspberry Pi 4 kurulum betiği (proje notuyla)
