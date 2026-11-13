@@ -41,7 +41,7 @@ nokta — bkz. `index.html` §05 ve §10.
 ## Devam Eden Araştırma
 
 Bu platform, WiFi kapsama alanı haritalaması üzerine yürütülecek bir araştırma projesinin temelini
-oluşturmaktadır. Mevcut haliyle robot otonom hareket, haritalama (SLAM) ve navigasyon (Nav2)
-yeteneklerine sahiptir; WiFi sinyal ölçümünün robotun konum bilgisiyle eşleştirilmesi, konum-etiketli
+oluşturmaktadır. Bu platform otonom hareket, haritalama (SLAM) ve navigasyon (Nav2) işlevlerini
+içermektedir; WiFi sinyal ölçümünün robotun konum bilgisiyle eşleştirilmesi, konum-etiketli
 kapsama haritası üretimi ve gerçek bir endüstriyel sahada manuel ölçümle doğrulanması bu temel
-platform üzerine geliştirilecek ve ayrı bir çalışma kapsamında ele alınacaktır.
+üzerine geliştirilecek ve ayrı bir çalışma kapsamında ele alınacaktır.
