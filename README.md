@@ -17,7 +17,8 @@ inşa edilmiş, özel (custom) mekanik parçalara sahip bir diferansiyel sürü�
   (tarayıcıda açılabilir)
 - `kablo_semasi.html` (+ `kablo_semasi.png` statik görseli) — `index.html` §04'teki şemayı tamamlayan,
   ayrı figürlere bölünmüş detaylı kablolama referansı (güç / sinyal+motor / ortak toprak)
-- `TurtleBot_Yapim_Kilavuzu.pdf` — aynı içeriğin PDF hâli (not: `index.html` kadar güncel olmayabilir)
+- `TurtleBot_Yapim_Kilavuzu.pdf` — `index.html`'in tam PDF hâli (33 sayfa, aynı içerik — tek dosya olarak
+  paylaşmak/yazdırmak için)
 - `esp32s3_config.h` — bu robotta fiilen kullanılan, kalibre edilmiş ESP32-S3 yapılandırma dosyası
 - `install_linorobot2.bash` — Raspberry Pi 4 kurulum betiği (proje notuyla)
 - `urdf/2wd_properties.urdf.xacro` — gerçek mezura ölçüleriyle güncellenmiş URDF özellik dosyası
@@ -36,3 +37,11 @@ gerçek mezura ölçümleriyle yapıldı (bkz. §08). LIDAR olarak ROBOTIS LDS-0
 kullanılıyor. Joystick teleop ve sistemin systemd ile otomatik başlatılması tam olarak çalışıyor.
 SLAM/Nav2 ile haritalama ve otonom navigasyon test edildi. Şaft-adaptör mekanik toleransı hassas bir
 nokta — bkz. `index.html` §05 ve §10.
+
+## Devam Eden Araştırma
+
+Bu platform, WiFi kapsama alanı haritalaması üzerine yürütülecek bir araştırma projesinin temelini
+oluşturmaktadır. Mevcut haliyle robot otonom hareket, haritalama (SLAM) ve navigasyon (Nav2)
+yeteneklerine sahiptir; WiFi sinyal ölçümünün robotun konum bilgisiyle eşleştirilmesi, konum-etiketli
+kapsama haritası üretimi ve gerçek bir endüstriyel sahada manuel ölçümle doğrulanması bu temel
+platform üzerine geliştirilecek ve ayrı bir çalışma kapsamında ele alınacaktır.
